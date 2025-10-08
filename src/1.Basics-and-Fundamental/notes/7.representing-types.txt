@@ -1,0 +1,135 @@
+🌟 TypeScript Data Structures Overview
+
+TypeScript’s type system gives you multiple ways to represent and organize data.
+There are four main built-in structures you can use:
+
+1️⃣ Object Types  
+2️⃣ Record Types  
+3️⃣ Tuple Types  
+4️⃣ Array Types
+
+
+Let’s explore each one clearly.
+
+🔹 1️⃣ Object Types
+
+Definition:
+Object types describe objects with a fixed set of properties,
+where each property can have its own specific type.
+
+✅ Example:
+
+type ProductDetails = {
+  title: string;
+  inStock: boolean;
+};
+
+
+title → must be a string
+
+inStock → must be a boolean
+
+Each key has its own distinct type, and no additional keys are allowed unless explicitly defined.
+
+💡 Use Case:
+When you know exactly what properties exist in your object and what type each should be.
+
+🔹 2️⃣ Record Types
+
+Definition:
+Record types describe objects with dynamic or unknown property names,
+but where all property values share the same type.
+
+✅ Example:
+
+type ConfigSettings = Record<string, number>;
+
+
+Keys can be any string
+
+Every value must be a number
+
+This means:
+
+const config: ConfigSettings = {
+  maxUsers: 10,
+  timeout: 3000,
+  retry: 5
+};
+
+
+💡 Use Case:
+When you need an object-like structure with consistent value types,
+but you don’t know the keys in advance.
+
+🔹 3️⃣ Tuple Types
+
+Definition:
+Tuple types represent arrays with a fixed number of elements,
+where each element can have a different and predefined type.
+
+✅ Example:
+
+type LogEntry = [Date, string, string];
+
+
+Each position in the tuple is strictly typed:
+
+const entry: LogEntry = [new Date(), "INFO", "System started"];
+
+
+1st element → Date
+
+2nd element → string (log level)
+
+3rd element → string (message)
+
+💡 Use Case:
+When you need to store a small, fixed collection of related values
+— where order and type of each element matter.
+
+🔹 4️⃣ Array Types
+
+Definition:
+Array types represent collections of elements of the same type.
+The length of the array is not fixed, and all elements share a common type.
+
+✅ Example:
+
+let ratings: number[] = [4, 5, 3, 4, 5];
+
+
+All items must be numbers — you cannot insert a string or boolean here.
+
+💡 Use Case:
+When you want a list of similar items (like user IDs, prices, or names)
+and don’t care about the exact number of elements.
+
+📊 Quick Comparison
+
+Type Structure	Fixed Keys	Fixed Length	Same Value Type	Example
+Object Type	✅ Yes	❌ No	❌ No	{ title: "Book", inStock: true }
+Record Type	❌ No	❌ No	✅ Yes	{ a: 1, b: 2, c: 3 }
+Tuple Type	✅ Yes (by index)	✅ Yes	❌ No	[new Date(), "INFO", "Message"]
+Array Type	❌ No	❌ No	✅ Yes	[1, 2, 3, 4]
+
+🎯 In Short
+
+Object Type: Fixed properties, each with unique type.
+
+Record Type: Dynamic keys, all values share same type.
+
+Tuple Type: Fixed-length array, each element can differ.
+
+Array Type: Same-type list with variable length.
+
+💡 Summary Visualization
+
+Object → fixed keys, distinct value types
+Record → flexible keys, same value type
+Tuple  → fixed length, predefined types per index
+Array  → variable length, same type for all elements
+
+
+TypeScript gives you these flexible structures so you can model your data precisely,
+whether you’re working with dynamic objects, fixed structures, or lists of uniform items.

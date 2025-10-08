@@ -1,0 +1,117 @@
+🌟 Literal Types in TypeScript (Exact Value Types)
+
+Literal types — also called exact value types — are types that represent one single specific value.
+You can think of them as a snapshot of a value in the type system.
+
+Only that exact value can be assigned to a variable of that type.
+
+🔹 Basic Example
+
+Let’s say we have a type that represents a single number value:
+
+type SomeNumber = 80;
+
+
+Here:
+
+SomeNumber is not the general number type.
+
+It represents only the value 80 — nothing else.
+
+Now, if we create a variable:
+
+const correct: SomeNumber = 80;   // ✅ Works fine
+
+
+✔ TypeScript says it’s valid because the value is exactly 80.
+
+But if we try this:
+
+const incorrect: SomeNumber = 50; // ❌ Error
+
+
+❌ TypeScript will complain:
+“Type 50 is not assignable to type 80.”
+
+That’s what a literal type means — it accepts only one exact value.
+
+🔸 String Literal Example
+
+We can do the same thing with strings:
+
+type SomeString = "blah blah";
+const correctStr: SomeString = "blah blah";   // ✅ Works
+const wrongStr: SomeString = "blah blah 2";   // ❌ Error
+
+
+💡 Only the exact literal value "blah blah" can be assigned to a variable of type SomeString.
+
+🧠 Literal Types Summary
+
+Literal types:
+
+Look like normal values (e.g., "hi", 42, false)
+
+Live in the type system
+
+Represent only one specific value
+
+Restrict variables to exactly that value
+
+⚙️ Why Are Literal Types Useful?
+
+Literal types are useful when you want to allow only a limited set of values — nothing more.
+
+Example: defining modes for your project.
+
+type Mode = "dev" | "debug" | "prod";
+
+const mode: Mode = "dev";      // ✅ OK
+const wrongMode: Mode = "test"; // ❌ Error: "test" is not assignable to type Mode
+
+
+🛡️ This helps prevent errors by restricting what values can be used.
+
+🔍 Assignability and Literal Types
+
+Literal types are subtypes of their primitive types.
+For example:
+
+"hi" and "bye" are literal types of the primitive type string
+
+42 and 14 are literal types of the primitive type number
+
+✅ "hi" and "bye" are both assignable to string
+❌ But only "hi" is assignable to the literal type "hi"
+
+✅ 42 and 14 are both assignable to number
+❌ But only 42 is assignable to the literal type 42
+
+🧩 Mental Model
+
+Think of it like this:
+
+string
+ ├── "hi"
+ └── "bye"
+
+number
+ ├── 42
+ └── 14
+
+
+The primitive type (like string or number) is a big umbrella.
+
+The literal types (like "hi", "bye", 42, 14) are smaller, exact pieces under it.
+
+A literal type fits into its primitive type, but not vice versa.
+
+🎯 In Short
+
+Literal types allow you to:
+
+Define exact, specific values at the type level
+
+Restrict variables to a set of allowed options
+
+Make your code safer, more predictable, and easier to reason about

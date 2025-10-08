@@ -1,0 +1,56 @@
+🌟 Understanding Data and Types in TypeScript
+
+Every programming language focuses on transforming data, and TypeScript is no different.
+However, there’s a key difference:
+
+➡️ In TypeScript, our “data” is actually types!
+
+So, when we write TypeScript code, we’re really writing programs that take types as input and produce other types as output.
+
+To master TypeScript, you need a strong understanding of its unique characteristics and various data types and structures.
+
+🔹 Primitive Types
+
+TypeScript includes a set of basic data types called primitives.
+These are the building blocks for all other types in JavaScript (besides functions and objects).
+
+The 7 primitive types in TypeScript are:
+
+string | number | boolean | bigint | symbol | null | undefined
+
+
+🧩 When you declare a variable with one of these types, it can only be assigned values that belong to that specific type.
+
+💬 Example: The String Type
+let message: string;
+message = "Hello";   // ✅ Works fine
+message = "Bye";     // ✅ Works fine
+message = 54;        // ❌ Error: number is not assignable to string
+
+
+Here:
+
+message is strictly a string type
+
+You can only assign text values (string literals) to it
+
+🔸 Literal Types
+
+A literal is a concrete instance of a primitive type — an exact value.
+
+Examples:
+
+Number literal → 42
+
+String literal → "bye"
+
+Boolean literal → false
+
+So:
+
+let num = 42;       // number literal
+let text = "bye";   // string literal
+let flag = false;   // boolean literal
+
+
+🧠 These literals represent specific values within their primitive categorie

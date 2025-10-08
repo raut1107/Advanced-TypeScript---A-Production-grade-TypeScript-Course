@@ -1,0 +1,176 @@
+🌟 The never Type in TypeScript
+
+So far, we’ve learned that unknown sits at the very top of the TypeScript type hierarchy —
+which means all other types are assignable to it.
+
+Now, you might wonder:
+➡️ Is there a type that sits at the very bottom of the hierarchy — the opposite of unknown?
+
+✅ Yes! That type is never.
+
+🔹 What Is the never Type?
+
+The never type represents a value that never occurs.
+It simply means something that never happens.
+
+In other words:
+
+It’s used to represent situations that cannot exist at runtime
+
+It’s the narrowest possible type in TypeScript
+
+It holds no values at all
+
+🔸 Position in the Type Hierarchy
+
+Here’s how it fits:
+
+unknown     (widest type)
+  ↑
+  any
+  ↑
+  string | number | boolean | object | ...
+  ↑
+  literals ("hi", 42, true, etc.)
+  ↑
+never      (narrowest type)
+
+
+🧠 So:
+
+unknown → Top (widest)
+
+never → Bottom (narrowest)
+
+🔹 How never Appears
+
+Let’s look at how never can appear naturally in code.
+
+When we intersect two types that have no overlap, TypeScript returns never.
+
+Example:
+
+type Result = number & string;
+
+
+💡 number and string have no common subtype, so:
+
+Result → never
+
+
+✅ Meaning: There’s no possible value that is both a number and a string.
+
+🔸 The Meaning of never
+
+The never type is used to describe:
+
+Functions that never return (like those that throw errors or run forever)
+
+Code branches that shouldn’t be reachable
+
+Type intersections or narrowing results that are impossible
+
+Example 1 – Function that never returns:
+
+function throwError(msg: string): never {
+  throw new Error(msg);
+}
+
+
+Example 2 – Unreachable code:
+
+function checkValue(x: string | number) {
+  if (typeof x === "string") {
+    console.log("String value");
+  } else if (typeof x === "number") {
+    console.log("Number value");
+  } else {
+    // Here x has type never
+    console.log("This should never happen");
+  }
+}
+
+
+🔹 Assignability Rules
+
+TypeScript type assignability always flows from bottom → top in the hierarchy.
+
+So:
+
+✅ never is assignable to every type
+
+❌ But no type is assignable to never
+
+Examples:
+
+let a: never;
+let b: string = "hi";
+
+a = b; // ❌ Error: string not assignable to never
+b = a; // ✅ OK: never assignable to string
+
+
+🧠 Rule to Remember:
+“The narrower can go up, but the wider can’t go down.”
+
+🔸 Why Is never Important?
+
+It helps TypeScript detect impossible cases
+
+It makes your code safer and more predictable
+
+It supports exhaustive checks in union handling
+
+Example:
+
+type Shape = "circle" | "square";
+
+function handleShape(shape: Shape) {
+  if (shape === "circle") {
+    console.log("Drawing circle");
+  } else if (shape === "square") {
+    console.log("Drawing square");
+  } else {
+    const _exhaustiveCheck: never = shape; // ✅ Type error if new value added
+  }
+}
+
+
+This ensures that if a new shape type (like "triangle") is added later,
+TypeScript will warn you to handle it — keeping your logic complete.
+
+📊 Quick Summary
+
+Concept	Description	Assignable To
+unknown	Widest type (top of hierarchy)	Everything can be assigned to it
+never	Narrowest type (bottom of hierarchy)	It can be assigned to everything
+
+🎯 In Short
+
+never means “this value can never exist”
+
+It sits at the bottom of the type hierarchy
+
+It appears in impossible situations (e.g. number & string)
+
+It’s assignable to all types, but no type can be assigned to it
+
+It’s useful for type safety, exhaustive checks, and error handling
+
+💡 Keep This Hierarchy in Mind
+
+unknown (top)
+   ↑
+   any
+   ↑
+   primitive types (string, number, boolean, etc.)
+   ↑
+   literal types ("hi", 42, false, etc.)
+   ↑
+never (bottom)
+
+
+The higher you go → the wider the type
+The lower you go → the narrower the type
+
+This mental model will help you understand TypeScript’s assignability rules and make sense of type errors as you continue learning.
