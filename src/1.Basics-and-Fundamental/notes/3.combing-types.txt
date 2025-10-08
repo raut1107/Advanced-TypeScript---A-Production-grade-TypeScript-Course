@@ -1,0 +1,169 @@
+🌟 Union Types and Intersection Types in TypeScript
+
+In TypeScript, there are two powerful concepts that let you build advanced and flexible type definitions:
+Union types ( | ) and Intersection types ( & ).
+
+These aren’t just simple operators — they let you combine and compose types to describe complex sets of possibilities.
+
+🔹 Union Types ( | )
+
+A union type represents a value that can be one of several types.
+Think of it as a collection of possible options.
+
+Example:
+
+type NotificationMethod = "email" | "sms" | "push";
+
+
+Here:
+
+The NotificationMethod type allows only one of these three exact string values:
+"email", "sms", or "push"
+
+✅ Valid assignments:
+
+let method: NotificationMethod;
+method = "email";  // ✅ OK
+method = "sms";    // ✅ OK
+method = "push";   // ✅ OK
+
+
+❌ Invalid:
+
+method = "call";   // ❌ Error: not assignable to type NotificationMethod
+
+
+🧠 Concept:
+A union type combines multiple types and allows a value to be any one of them.
+
+Later, we’ll see how conditional types can iterate over union branches — making TypeScript extremely powerful and expressive.
+
+🔸 Intersection Types ( & )
+
+An intersection type combines multiple types into one.
+A value of an intersection type must satisfy all the individual types it combines.
+
+Example:
+
+type Person = {
+  name: string;
+};
+
+type RecordLabel = {
+  recordId: number;
+};
+
+type Employee = Person & RecordLabel;
+
+
+Here:
+
+Employee is an intersection of Person and RecordLabel
+
+That means it must have both:
+
+a name (from Person)
+
+a recordId (from RecordLabel)
+
+✅ Example usage:
+
+const emp: Employee = {
+  name: "John",
+  recordId: 123,
+};  // ✅ Works fine
+
+
+❌ If you miss one:
+
+const wrongEmp: Employee = {
+  name: "John",
+};  // ❌ Error: recordId is missing
+
+
+🧩 Intersection = combine all properties of all types into one bigger type.
+
+⚙️ Union vs Intersection Quick Summary
+
+Concept	Symbol	Meaning	Example
+Union	`	`	Value can be one of multiple types
+Intersection	&	Value must include all combined types	Person & RecordLabel
+
+🔍 Assignability in Union Types
+
+Let’s say we have:
+
+type StringOrNumber = string | number;
+
+
+✅ You can assign:
+
+a string to it
+
+or a number to it
+
+because both are part of the union.
+
+Example:
+
+let val: StringOrNumber;
+val = "hello"; // ✅
+val = 42;      // ✅
+
+
+❌ But you cannot assign a union type back to a single branch:
+
+let text: string;
+text = val; // ❌ Error if val could also be a number
+
+
+🧠 Assignability only flows from narrow → wide, not the other way around.
+
+📊 Type Hierarchy (Assignability Direction)
+
+Think of type relationships like a pyramid:
+
+        string | number
+         /          \
+    string          number
+
+
+Assignments go upward (from bottom to top)
+
+You can assign a narrower type (like string) to a wider one (like string | number)
+
+But not the other way around
+
+✅ Example:
+
+let a: "one" = "one";
+let b: 1 | 2 | 3 | 4;
+
+b = a;  // ✅ OK (literal -> union)
+a = b;  // ❌ Error (union -> literal)
+
+
+🧠 In Short
+
+Union types ( | ) → allow one of several possible types
+
+Intersection types ( & ) → require satisfying all combined types
+
+Assignability flows from specific → general, never the reverse
+
+These tools let you describe rich, type-safe data shapes in TypeScript
+
+🎯 Summary Example
+
+type NotificationMethod = "email" | "sms" | "push";  // Union
+type Person = { name: string };
+type RecordLabel = { recordId: number };
+type Employee = Person & RecordLabel;                // Intersection
+
+const sendNotification = (method: NotificationMethod) => {
+  console.log(`Sending via ${method}`);
+};
+
+const emp: Employee = { name: "Alice", recordId: 1 };
+sendNotification("email"); // ✅ Works
+sendNotification("call");  // ❌ Error: not allowed

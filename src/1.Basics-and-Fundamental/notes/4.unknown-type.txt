@@ -1,0 +1,172 @@
+🌟 The unknown Type in TypeScript
+
+Let’s talk about the unknown type and where it fits into the TypeScript type hierarchy — the mental model we’ve been building.
+
+🔹 Where unknown Sits in the Type Hierarchy
+
+In TypeScript, unknown sits at the very top of the type hierarchy.
+
+This means:
+✅ Every type is assignable to unknown
+❌ But unknown is not assignable to other types (without narrowing).
+
+So, unknown is the widest possible type in TypeScript.
+
+🔸 When to Use unknown
+
+We usually use unknown when we don’t know the exact type of a value yet.
+Common examples include:
+
+Form inputs coming from a frontend
+
+JSON data received from an external API
+
+Any variable whose structure is uncertain at compile time
+
+Example:
+
+let userInput: unknown;
+
+userInput = "Hello";   // ✅ OK
+userInput = 42;        // ✅ OK
+userInput = { name: "Alice" }; // ✅ OK
+
+
+But since it’s unknown, you cannot use it directly without checking its type first:
+
+if (typeof userInput === "string") {
+  console.log(userInput.toUpperCase());  // ✅ Safe
+}
+
+
+🔹 unknown in Intersections ( & )
+
+What happens if we intersect unknown with another type?
+
+Example:
+
+type Result = unknown & string;
+
+
+Here’s how it works:
+
+Intersection (&) keeps only the common parts between both types.
+
+Since unknown is the widest type, every other type (like string) is a subtype of it.
+
+✅ Therefore, the intersection resolves to the narrower type, i.e. string.
+
+Example summary:
+
+unknown & string   → string
+unknown & "hi"     → "hi"
+unknown & number   → number
+
+
+🧠 Rule:
+👉 Intersection types always resolve to the narrowest type among the operands.
+
+🔸 unknown in Unions ( | )
+
+Now, what happens when we use unknown in a union?
+
+Example:
+
+type Result = unknown | string;
+
+
+A union ( | ) keeps all possible options.
+
+It resolves to the widest branch among them.
+
+Since unknown is the widest type, it dominates the union.
+
+✅ So:
+
+unknown | string   → unknown
+unknown | number   → unknown
+
+
+🧠 Rule:
+👉 Union types always resolve to the widest type among the operands.
+
+🔹 Literal and Primitive Type Example
+
+Example:
+
+type Example = "hi" | string;
+
+
+Here:
+
+"hi" is a string literal type
+
+string is the wider primitive type
+
+✅ The resulting type is string — because string sits higher in the hierarchy.
+
+🔸 Unions with Types at the Same Level
+
+If multiple types sit at the same height in the type hierarchy,
+then their union simply keeps all of them.
+
+Example:
+
+type Example = string | number | boolean;
+
+
+Here:
+
+All three (string, number, boolean) are primitive types
+
+They share the same “height” in the hierarchy
+✅ The resulting type remains a union of them
+
+Result: string | number | boolean
+
+
+📊 Quick Summary of Type Behavior
+
+Operation	Chooses	Example	Result
+Intersection (&)	Narrowest type	unknown & string	string
+Union (`	`)	Widest type	unknown | string
+
+🧠 Type Hierarchy Reminder (Top → Bottom)
+
+unknown
+ ├── any
+ │   ├── string | number | boolean | object | ...
+ │   │     ├── "hi", "bye", 42, etc. (literals)
+ │   │
+ │   └── never (bottom)
+
+
+Top (unknown): widest type — everything is assignable to it
+
+Bottom (never): narrowest type — assignable to nothing
+
+🎯 Why This Matters
+
+Every type error in TypeScript is actually about wrong assignability.
+
+If you understand where a type sits in the hierarchy,
+you can easily figure out why one type isn’t assignable to another.
+
+✅ Intersection → Narrowest
+✅ Union → Widest
+✅ unknown → Top of hierarchy
+✅ never → Bottom of hierarchy
+
+💡 In Short
+
+unknown means “I don’t know what this is yet.”
+
+Everything can be assigned to it.
+
+But it can’t be assigned from it without narrowing.
+
+In intersections, it resolves to the narrower type.
+
+In unions, it resolves to the wider type.
+
+Understanding where it fits in the type hierarchy helps debug type errors easily.
