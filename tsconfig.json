@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target":"ES2020",
+        "lib":["ES6","DOM"]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
