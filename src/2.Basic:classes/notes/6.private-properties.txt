@@ -1,0 +1,134 @@
+🌟 Private Properties in TypeScript Classes
+
+In TypeScript (and modern JavaScript), you can restrict access to class properties so that they cannot be accessed or modified directly from outside the class.
+
+This is done by marking properties as private — ensuring encapsulation and data safety.
+
+🔹 Problem Example
+
+Let’s say we have this simple class:
+
+class MapPin {
+  lat: number;
+  lng: number;
+
+  get coordinates() {
+    return { lat: this.lat, lng: this.lng };
+  }
+}
+
+
+Now if we create an instance:
+
+const pin = new MapPin();
+pin.lat = 10;  // ❌ We can still modify it directly!
+
+
+⚠️ This means anyone using this class can change its internal data — which defeats the purpose of encapsulation.
+
+🔸 Making Properties Private (Using private)
+
+To restrict access, use the private keyword before your properties:
+
+class MapPin {
+  private lat: number;
+  private lng: number;
+
+  constructor(lat: number, lng: number) {
+    this.lat = lat;
+    this.lng = lng;
+  }
+
+  get coordinates() {
+    return { lat: this.lat, lng: this.lng };
+  }
+}
+
+
+Now, if you try:
+
+const pin = new MapPin(10.123, 20.456);
+console.log(pin.lat); // ❌ Error: Property 'lat' is private
+
+
+✅ Only methods inside the class (like the getter) can access lat and lng.
+
+🔹 Alternative: JavaScript Private Fields (# syntax)
+
+You can also make properties private using a hash # prefix —
+this is the native JavaScript way of declaring private fields.
+
+class MapPin {
+  #lat: number;
+  #lng: number;
+
+  constructor(lat: number, lng: number) {
+    this.#lat = lat;
+    this.#lng = lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+}
+
+
+✅ Works exactly the same — but with true JavaScript-level privacy,
+meaning even at runtime, no one can access those fields outside the class.
+
+const pin = new MapPin(12.34, 56.78);
+console.log(pin.#lat); // ❌ SyntaxError – illegal access
+
+
+🔍 Comparing private vs #
+
+Feature	private Keyword	# Hash Syntax
+Origin	TypeScript-only	Native JavaScript
+Runtime Enforcement	❌ No (erased at compile time)	✅ Yes (truly private)
+Access Outside Class	Blocked by TypeScript compiler	Impossible at runtime
+Best For	TypeScript projects	Modern JS + TS projects
+Syntax	private lat: number	#lat: number
+
+💡 When to Use Which
+
+✅ Use private if you’re mainly writing TypeScript and want cleaner syntax.
+
+✅ Use # if you want true runtime privacy and to follow modern JavaScript standards.
+
+Both protect your class internals — the choice depends on whether you want TypeScript-level or JavaScript-level enforcement.
+
+🧩 Final Example
+
+class MapPin {
+  #lat: number;
+  #lng: number;
+
+  constructor(lat: number, lng: number) {
+    this.#lat = lat;
+    this.#lng = lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+}
+
+const pin = new MapPin(40.7128, -74.006);
+console.log(pin.coordinates.lat); // ✅ Works fine
+console.log(pin.#lat); // ❌ Error — private field
+
+
+🎯 In Short
+
+Concept	Description
+Private Property	Hides data from outside access
+private Keyword	TypeScript-only privacy (compile-time)
+# Syntax	JavaScript-native true privacy (runtime)
+Getter	Safely exposes read-only access
+Encapsulation	Prevents external modification of internal state
+
+💬 Summary
+
+👉 Use private or # to protect class internals.
+👉 Access them safely using getter methods.
+👉 Prefer # for modern JS-style, runtime privacy.
