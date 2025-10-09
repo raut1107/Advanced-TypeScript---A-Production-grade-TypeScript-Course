@@ -1,0 +1,120 @@
+🌟 Getters in TypeScript Classes
+
+In TypeScript (and JavaScript), getters are special methods inside a class that allow you to access a property like a normal variable — but behind the scenes, it’s actually a function call.
+
+Getters make your code cleaner, more readable, and encapsulated.
+
+🔹 Example Scenario
+
+Let’s say we have a class called MapPin that stores location coordinates.
+
+class MapPin {
+  constructor(private lat: number, private lng: number) {}
+
+  // ✅ Getter method for coordinates
+  get coordinates() {
+    return {
+      lat: this.lat,
+      lng: this.lng
+    };
+  }
+}
+
+
+Here, coordinates is a getter that returns an object containing latitude (lat) and longitude (lng).
+
+🔸 Using the Getter
+
+Now, let’s create an instance and use the getter:
+
+const pin = new MapPin(10.123, 20.456);
+
+// Accessing the getter
+const coords = pin.coordinates;
+console.log(coords.lat, coords.lng);
+
+
+🧠 Notice something?
+
+We don’t call the method with parentheses like pin.coordinates() ❌
+
+Instead, we use it like a property → pin.coordinates ✅
+
+That’s the power of the get keyword.
+
+🔍 Without a Getter (Before)
+
+If you don’t use a getter, you’d have to write:
+
+class MapPin {
+  constructor(private lat: number, private lng: number) {}
+
+  coordinates() {
+    return {
+      lat: this.lat,
+      lng: this.lng
+    };
+  }
+}
+
+const pin = new MapPin(10, 20);
+console.log(pin.coordinates().lat); // 👈 Needs parentheses ❌
+
+
+This works, but it’s not as elegant or property-like.
+
+⚙️ Getter Syntax
+
+get propertyName() {
+  // return something
+}
+
+
+✔ When you add the get keyword before a method name:
+
+It becomes a computed property
+
+You can access it without parentheses
+
+It’s read-only (unless you define a setter)
+
+💡 Example with Type Checking
+
+When you hover over the getter result (in an editor like VS Code),
+TypeScript shows that pin.coordinates is an object with two numeric properties:
+
+{
+  lat: number;
+  lng: number;
+}
+
+
+So TypeScript fully understands the structure returned by the getter.
+
+🎯 In Short
+
+Concept	Description
+Getter	A method that behaves like a property
+Syntax	get propertyName() { ... }
+Access	Use without parentheses (obj.prop)
+Purpose	To provide computed or protected access to class data
+Read-only	Yes, unless paired with a setter
+
+🧩 Summary Example
+
+class MapPin {
+  constructor(private lat: number, private lng: number) {}
+
+  get coordinates() {
+    return { lat: this.lat, lng: this.lng };
+  }
+}
+
+const pin = new MapPin(52.52, 13.405);
+console.log(pin.coordinates.lat); // ✅ 52.52
+
+
+✅ Works perfectly — no parentheses, clean syntax, and full type safety.
+
+💬 In Short:
+👉 A getter in TypeScript lets you access computed or encapsulated data from a class as if it were a normal property — while maintaining readability and type safety.

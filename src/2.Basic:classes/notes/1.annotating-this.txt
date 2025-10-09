@@ -1,0 +1,146 @@
+🏫 TypeScript: this in Functions and Classes
+1️⃣ Understanding this in Functions
+
+Every function in JavaScript/TypeScript is defined and called within a scope.
+
+this refers to the scope in which the function was defined, not necessarily the parameters you pass.
+
+Example: Object with a function
+const location = {
+    lat: 10,
+    lng: 20,
+    relocate(lat: number, lng: number) {
+        this.lat = lat;   // 'this.lat' refers to the object's property
+        this.lng = lng;   // 'this.lng' refers to the object's property
+    }
+};
+
+
+lat and lng parameters are different from this.lat and this.lng.
+
+this.lat accesses the property in the object scope, not the function parameter.
+
+2️⃣ Typing this in Normal Functions
+
+TypeScript allows you to type this explicitly.
+
+This is only possible in normal functions, not arrow functions.
+
+const location = {
+    lat: 0,
+    lng: 0,
+    relocate(this: { lat: number; lng: number }, lat: number, lng: number) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+};
+
+
+✅ Benefits:
+
+Type checking works correctly.
+
+Prevents the error:
+
+'this' implicitly has type 'any' because it does not have a type annotation
+
+
+Important: You do not pass this when calling the function:
+
+location.relocate(10, 20); // correct
+
+3️⃣ this in Arrow Functions
+
+Arrow functions do not have their own this.
+
+They inherit this from the containing scope.
+
+TypeScript does not allow typing this in arrow functions:
+
+const obj = {
+    lat: 0,
+    lng: 0,
+    relocateArrow: (lat: number, lng: number) => {
+        // this.lat or this.lng will refer to outer scope (global/window)
+    }
+};
+
+
+❌ Error if you try:
+
+Arrow function cannot have 'this' parameter.
+
+
+Use arrow functions inside classes to automatically bind this to the class instance.
+
+4️⃣ Functions Defined Directly in Object Scope
+
+When you define a function directly in an object, you don’t always need to annotate this.
+
+TypeScript can often infer the type based on the object itself.
+
+const obj = {
+    lat: 0,
+    lng: 0,
+    relocate(lat: number, lng: number) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+};
+
+
+No this annotation is required here.
+
+Still works as expected.
+
+5️⃣ Intro to Classes in TypeScript
+
+A class is a blueprint for creating objects with properties and methods.
+
+Advantages of TypeScript classes:
+
+Typed properties
+
+Typed methods
+
+Access modifiers (public, private, protected)
+
+Arrow functions to automatically bind this
+
+Basic Example:
+class Location {
+    lat: number;
+    lng: number;
+
+    constructor(lat: number, lng: number) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    relocate(lat: number, lng: number) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    relocateArrow = (lat: number, lng: number) => {
+        this.lat = lat;
+        this.lng = lng;
+    };
+}
+
+const loc = new Location(0, 0);
+loc.relocate(10, 20);        // works
+loc.relocateArrow(30, 40);   // also works, arrow binds this automatically
+
+
+Arrow function methods inside classes are useful to avoid losing the this context in callbacks.
+
+✅ Key Takeaways
+
+Normal function: this can be typed explicitly.
+
+Arrow function: this is inherited from the surrounding scope; cannot be typed.
+
+Object methods: this is often inferred; explicit typing optional.
+
+Classes: Combine both patterns; arrow functions auto-bind this for safe usage.

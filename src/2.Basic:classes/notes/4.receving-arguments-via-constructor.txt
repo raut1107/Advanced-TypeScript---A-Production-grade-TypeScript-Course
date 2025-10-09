@@ -1,0 +1,54 @@
+🏫 TypeScript: Constructor Arguments and Default Values
+1️⃣ Passing Initial Values via Constructor
+
+Instead of hardcoding default values in properties, you can receive them via the constructor.
+
+This allows flexible initialization when creating class instances.
+
+Example: Optional Constructor Argument
+class MapPin {
+    lat: number;
+    lng: number;
+
+    constructor(location?: { lat: number; lng: number }) {
+        this.lat = location?.lat ?? 0; // Use provided lat or default to 0
+        this.lng = location?.lng ?? 0; // Use provided lng or default to 0
+    }
+
+    relocate(lat: number, lng: number) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+}
+
+// Example usage:
+const pin1 = new MapPin({ lat: 10, lng: 20 });
+console.log(pin1.lat, pin1.lng); // 10, 20
+
+const pin2 = new MapPin();
+console.log(pin2.lat, pin2.lng); // 0, 0 (default)
+
+2️⃣ Key Points
+
+Optional constructor arguments: Use ? to make the argument optional.
+
+Type inference for properties:
+
+TypeScript can infer property types from the constructor, so you don’t need to explicitly type lat and lng again.
+
+Default values: Use the nullish coalescing operator ?? to fall back to defaults if values aren’t provided:
+
+this.lat = location?.lat ?? 0;
+
+
+This approach removes the need to initialize properties with hardcoded zeros at the class level.
+
+Constructor arguments can be objects to make the code more readable and flexible.
+
+3️⃣ Benefits
+
+Cleaner, more flexible initialization.
+
+Reduces duplication of default values.
+
+TypeScript automatically infers types from constructor parameters.

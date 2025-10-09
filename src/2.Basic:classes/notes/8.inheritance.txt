@@ -1,0 +1,219 @@
+🌟 Inheritance in TypeScript Classes
+
+Inheritance is one of the core concepts of object-oriented programming (OOP).
+In TypeScript, it allows one class (a child) to extend another class (a parent) and reuse its properties and methods — avoiding duplication and keeping code clean.
+
+However, while inheritance can be powerful, it can also add unnecessary complexity if overused.
+TypeScript supports both OOP and more functional or composition-based patterns, so use inheritance only when it truly simplifies your design.
+
+🔹 When to Use Inheritance
+
+Use inheritance when:
+
+A new class is a specialized version of another class.
+
+You want to reuse common logic or share structure between related classes.
+
+Avoid inheritance when:
+
+You’re just sharing utility behavior — prefer composition or object types.
+
+You’re forcing an artificial relationship between unrelated concerns.
+
+🔸 Example Scenario
+
+Let’s say we have a class called MapPin that represents a marker on a map.
+
+It handles two types of logic:
+
+Coordinates (lat/lng) — math/location logic
+
+Marker status (active, disabled, pinned) — UI logic
+
+These are two separate concerns.
+So, to keep things clean, we’ll split them into two classes and make one class extend the other.
+
+Step 1: Create a Base Class (Parent)
+
+This will handle coordinate logic only.
+
+class Coordinates {
+  #lat: number;
+  #lng: number;
+
+  constructor(location: { lat: number; lng: number }) {
+    this.#lat = location.lat;
+    this.#lng = location.lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+
+  set coordinates(location: { lat: number; lng: number }) {
+    this.#lat = location.lat;
+    this.#lng = location.lng;
+  }
+
+  relocate(location: { lat: number; lng: number }) {
+    this.coordinates = location;
+  }
+}
+
+
+✅ This Coordinates class is completely self-contained — it handles only lat and lng.
+
+Step 2: Create the Derived Class (Child)
+
+Now we’ll create a MapPin class that extends the Coordinates class and adds marker-specific logic.
+
+type MarkerStatus = "disabled" | "active" | "pinned";
+
+class MapPin extends Coordinates {
+  status: MarkerStatus;
+
+  constructor(
+    location: { lat: number; lng: number },
+    status: MarkerStatus = "active"
+  ) {
+    // 🟢 Call the parent class constructor using super()
+    super(location);
+    this.status = status;
+  }
+
+  disable() {
+    this.status = "disabled";
+  }
+
+  isDisabled() {
+    return this.status === "disabled";
+  }
+
+  isActive() {
+    return this.status === "active";
+  }
+
+  isPinned() {
+    return this.status === "pinned";
+  }
+}
+
+
+🔹 How It Works
+
+The extends keyword makes MapPin inherit from Coordinates.
+
+All properties and methods (coordinates, relocate, etc.) become available in MapPin.
+
+Inside a child class constructor, you must call super() to initialize the parent.
+
+super() runs the parent class constructor and passes any required parameters.
+
+super(location);
+
+
+Without calling super(), TypeScript will show:
+
+“Constructors for derived classes must contain a super call.”
+
+Step 3: Using the Inherited Class
+const pin = new MapPin({ lat: 20, lng: 30 });
+
+// Access inherited methods
+console.log(pin.coordinates); // ✅ { lat: 20, lng: 30 }
+
+// Use MapPin’s own methods
+pin.disable();
+console.log(pin.isDisabled()); // ✅ true
+
+// Relocate inherited from Coordinates
+pin.relocate({ lat: 50, lng: 60 });
+console.log(pin.coordinates); // ✅ { lat: 50, lng: 60 }
+
+
+Now MapPin can:
+
+Use everything from Coordinates
+
+Add its own extra behavior (status, disable(), etc.)
+
+🔸 Why We Use super()
+
+super() calls the parent constructor.
+
+It ensures that all inherited properties (like #lat and #lng) are properly initialized.
+
+You can also call parent methods inside child methods using super.methodName() if needed.
+
+🔹 Full Example
+
+type MarkerStatus = "disabled" | "active" | "pinned";
+
+class Coordinates {
+  #lat: number;
+  #lng: number;
+
+  constructor(location: { lat: number; lng: number }) {
+    this.#lat = location.lat;
+    this.#lng = location.lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+
+  relocate(location: { lat: number; lng: number }) {
+    this.#lat = location.lat;
+    this.#lng = location.lng;
+  }
+}
+
+class MapPin extends Coordinates {
+  status: MarkerStatus;
+
+  constructor(
+    location: { lat: number; lng: number },
+    status: MarkerStatus = "active"
+  ) {
+    super(location); // Call parent class constructor
+    this.status = status;
+  }
+
+  disable() {
+    this.status = "disabled";
+  }
+
+  isDisabled() {
+    return this.status === "disabled";
+  }
+
+  isActive() {
+    return this.status === "active";
+  }
+
+  isPinned() {
+    return this.status === "pinned";
+  }
+}
+
+const pin = new MapPin({ lat: 25, lng: 40 });
+console.log(pin.coordinates); // ✅ Inherited getter
+pin.disable();
+console.log(pin.isDisabled()); // ✅ true
+
+
+🔍 Key Takeaways
+
+Concept	Description
+extends	Used to inherit from another class
+super()	Calls the parent class constructor
+Parent class	Base class that holds shared logic
+Child class	Specialized version that extends the base
+Composition vs Inheritance	Prefer composition unless inheritance makes things simpler
+
+🎯 In Short
+
+👉 Use extends to inherit functionality.
+👉 Always call super() in the child constructor.
+👉 Use inheritance to separate concerns (like math vs UI logic).
+👉 Avoid over-engineering — keep class hierarchies simple and meaningful.

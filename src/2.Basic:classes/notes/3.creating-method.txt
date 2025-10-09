@@ -1,0 +1,65 @@
+🏫 TypeScript: Methods in Classes
+1️⃣ Defining a Method
+
+A method is a function attached to a class.
+
+You define it inside the class just like a normal function.
+
+Example: Normal Method
+class MapPin {
+    lat: number = 0;
+    lng: number = 0;
+
+    // Method to update location
+    relocate(lat: number, lng: number) {
+        this.lat = lat;   // 'this' refers to the instance
+        this.lng = lng;
+    }
+}
+
+const pin = new MapPin();
+pin.relocate(10, 20);
+console.log(pin.lat, pin.lng); // 10, 20
+
+
+this refers to the instance of the class, giving access to its properties.
+
+2️⃣ Using Arrow Functions as Methods
+
+You can also define a method as an arrow function:
+
+class MapPin {
+    lat: number = 0;
+    lng: number = 0;
+
+    // Arrow function method
+    relocate = (lat: number, lng: number) => {
+        this.lat = lat;
+        this.lng = lng;
+    };
+}
+
+const pin = new MapPin();
+pin.relocate(30, 40);
+console.log(pin.lat, pin.lng); // 30, 40
+
+
+✅ Benefits of arrow function methods:
+
+Automatically binds this to the class instance.
+
+Useful in callbacks or when passing the method around.
+
+❌ Limitation of normal methods:
+
+this can change if the method is detached from the instance (legacy code or certain patterns).
+
+3️⃣ Key Takeaways
+
+Normal methods are defined like regular functions inside a class.
+
+Arrow function methods automatically bind this to the instance.
+
+Use arrow functions if you want guaranteed this binding, especially in callbacks or older codebases.
+
+Normal methods allow more flexibility with this, useful for advanced or legacy patterns.

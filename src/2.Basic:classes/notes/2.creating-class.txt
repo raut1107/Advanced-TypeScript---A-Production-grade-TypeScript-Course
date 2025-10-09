@@ -1,0 +1,90 @@
+🏫 TypeScript: Classes
+1️⃣ What is a Class?
+
+A class in TypeScript behaves similarly to an object type, but it follows different syntax.
+
+A class is a blueprint for creating objects with properties and methods.
+
+To create an instance of a class, use the new keyword:
+
+const pin = new MapPin();
+
+
+After creating an instance, you can access its properties like an object:
+
+pin.lat;
+pin.lng;
+
+2️⃣ Defining Properties in a Class
+
+Like object types, you declare the properties inside the class:
+
+class MapPin {
+    lat: number;
+    lng: number;
+}
+
+
+Now, TypeScript knows the types and no longer throws errors when you access them:
+
+const pin = new MapPin();
+console.log(pin.lat); // no error
+
+3️⃣ Initializing Properties with a Constructor
+
+A constructor is a special method called when creating an instance:
+
+class MapPin {
+    lat: number;
+    lng: number;
+
+    constructor() {
+        this.lat = 0;
+        this.lng = 0;
+    }
+}
+
+
+Instantiating the class calls the constructor automatically:
+
+const pin = new MapPin();
+console.log(pin.lat); // 0
+console.log(pin.lng); // 0
+
+
+Alternative simpler initialization:
+
+class MapPin {
+    lat: number = 0;
+    lng: number = 0;
+}
+
+4️⃣ Read-Only Properties
+
+You can make properties read-only so they cannot be modified outside the class:
+
+class MapPin {
+    readonly lat: number;
+    readonly lng: number;
+
+    constructor() {
+        this.lat = 0;
+        this.lng = 0;
+    }
+}
+
+const pin = new MapPin();
+pin.lat = 10; // ❌ Error: Cannot assign to 'lat' because it is a read-only property
+
+
+This is useful for protecting internal state from being modified directly by consumers.
+
+✅ Key Takeaways
+
+A class is a blueprint for objects.
+
+Use constructor to initialize properties when creating instances.
+
+Properties can be typed, just like object types.
+
+Use readonly to prevent modification of properties outside the class.

@@ -1,0 +1,154 @@
+🌟 Setters in TypeScript Classes
+
+In TypeScript, we can define setter methods that allow controlled, safe modification of private properties — while still keeping them encapsulated inside the class.
+
+A setter lets you use an assignment-style syntax to update values — just like a property — while still running your own logic in the background.
+
+🔹 Recap: Getter
+
+Previously, we created a getter to safely access data:
+
+class MapPin {
+  #lat: number;
+  #lng: number;
+
+  constructor(lat: number, lng: number) {
+    this.#lat = lat;
+    this.#lng = lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+}
+
+
+Now, we can read it using:
+
+const pin = new MapPin(10.12, 20.34);
+console.log(pin.coordinates); // ✅ { lat: 10.12, lng: 20.34 }
+
+
+🔸 Adding a Setter
+
+To make this class more flexible, we can add a setter that lets us update lat and lng using property assignment syntax.
+
+We do this using the set keyword — just like get.
+
+class MapPin {
+  #lat: number;
+  #lng: number;
+
+  constructor(lat: number, lng: number) {
+    this.#lat = lat;
+    this.#lng = lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+
+  set coordinates(location) {
+    this.#lat = location.lat;
+    this.#lng = location.lng;
+  }
+}
+
+
+✅ Now, TypeScript automatically knows:
+
+When we read → it uses the getter.
+
+When we assign → it uses the setter.
+
+🔹 Using the Setter
+
+const pin = new MapPin(12.5, 45.9);
+
+// Using the getter
+console.log(pin.coordinates); 
+// Output: { lat: 12.5, lng: 45.9 }
+
+// Using the setter
+pin.coordinates = { lat: 33.1, lng: 44.2 }; // ✅ Automatically calls the setter
+
+console.log(pin.coordinates);
+// Output: { lat: 33.1, lng: 44.2 }
+
+
+No function calls, no parentheses — just clean property-like access.
+
+🔸 Automatic Type Inference
+
+Notice something interesting?
+We didn’t explicitly write a type for the location parameter in the setter!
+
+set coordinates(location) {
+  this.#lat = location.lat;
+  this.#lng = location.lng;
+}
+
+
+If you hover over location, TypeScript automatically infers its type as:
+
+{ lat: number; lng: number }
+
+
+That’s because it derives the type from the getter’s return value!
+So both getter and setter stay perfectly in sync, type-safe, and effortless.
+
+🔹 Adding Type Annotation (Optional)
+
+If you want to be explicit, you can still define it manually:
+
+set coordinates(location: { lat: number; lng: number }) {
+  this.#lat = location.lat;
+  this.#lng = location.lng;
+}
+
+
+But usually, TypeScript inference is smart enough — so you can safely skip it.
+
+🧩 Full Example
+
+class MapPin {
+  #lat: number;
+  #lng: number;
+
+  constructor(lat: number, lng: number) {
+    this.#lat = lat;
+    this.#lng = lng;
+  }
+
+  get coordinates() {
+    return { lat: this.#lat, lng: this.#lng };
+  }
+
+  set coordinates(location) {
+    this.#lat = location.lat;
+    this.#lng = location.lng;
+  }
+}
+
+const pin = new MapPin(40.7128, -74.006);
+console.log(pin.coordinates); // ✅ Getter
+
+pin.coordinates = { lat: 34.0522, lng: -118.2437 }; // ✅ Setter
+console.log(pin.coordinates);
+
+
+🔍 Key Takeaways
+
+Concept	Description
+Getter (get)	Used to read class data safely
+Setter (set)	Used to update class data safely
+Usage	Accessed like normal properties (no parentheses)
+Type Inference	Setter infers parameter type from getter’s return
+Encapsulation	Still respects private/internal class boundaries
+
+🎯 In Short
+
+👉 Use get for safe reading.
+👉 Use set for safe, controlled updates.
+👉 TypeScript automatically keeps them type-safe and in sync.
+👉 You get clean, intuitive syntax — with full encapsulation.
