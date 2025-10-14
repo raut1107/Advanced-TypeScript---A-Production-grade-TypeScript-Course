@@ -1,0 +1,67 @@
+🌟 Tuple Lengths and Next Index in TypeScript
+
+Tuples in TypeScript not only let you define fixed arrays with specific types, but also expose a length property at the type level.
+You can use this to compute positions, indexes, or even derive new types dynamically.
+
+🔹 Getting the Length of a Tuple
+
+Consider this tuple:
+
+type MyTuple = [1, 2, 3];
+
+
+You can extract its length using:
+
+type MyTupleLength = MyTuple['length'];
+
+
+✅ Result:
+
+MyTupleLength is 3.
+
+If the tuple changes dynamically, the length updates automatically.
+
+type DynamicTuple = [1, 2, 3, 4];
+type DynamicLength = DynamicTuple['length']; // 4
+
+🔹 Getting the Next Index
+
+Sometimes, you may want the next index of a tuple — for instance, length + 1.
+Direct arithmetic (MyTuple['length'] + 1) does not work because TypeScript types are not runtime numbers.
+
+Solution: Use a Helper Type
+type NextIndex<T extends unknown[]> = [...T, unknown]['length'];
+
+
+✅ How it works:
+
+T extends unknown[] ensures that T is a tuple.
+
+[...T, unknown] creates a new tuple with an extra element at the end.
+
+'length' then extracts the length of the extended tuple, effectively length + 1.
+
+Example:
+type MyTuple = [1, 2, 3, 4];
+type TestNextIndex = NextIndex<MyTuple>; // 5
+
+
+Original tuple length: 4
+
+After adding one unknown element, length becomes: 5
+
+🔹 Key Takeaways
+Concept	Description	Example
+Tuple Length	Access the number of elements in a tuple	MyTuple['length']
+Next Index	Get "length + 1" dynamically	type NextIndex<T extends unknown[]> = [...T, unknown]['length']
+Dynamic Tuples	Works with any length tuple	NextIndex<[1, 2, 3, 4]> = 5
+Type-Level Computation	Tuple lengths can be used for compile-time calculations	Useful for type-safe indexing, constraints, and advanced type tricks
+🎯 Summary
+
+You can extract tuple lengths directly with ['length'].
+
+For computing the next index, create a helper type that extends the tuple by one element and gets the length.
+
+These tricks are purely type-level, meaning they exist at compile time and help enforce type safety.
+
+Useful in type-safe libraries, tuple manipulation, and advanced TypeScript patterns.

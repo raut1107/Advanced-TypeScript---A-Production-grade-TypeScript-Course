@@ -1,0 +1,81 @@
+🌟 Arrays in TypeScript
+
+In TypeScript, arrays are used to represent collections where each element shares the same type.
+They are one of the most common and versatile data structures in the language.
+
+🔹 Declaring Arrays
+
+You can define arrays using two equivalent syntaxes:
+
+let numbers: number[] = [1, 2, 3];
+let strings: Array<string> = ["a", "b", "c"];
+
+
+✅ Both declarations above describe arrays that contain elements of a single type.
+You can choose whichever syntax you find more readable — they behave exactly the same.
+
+🔹 Arrays with Union Types
+
+Even though arrays typically hold values of a single type, that type itself can be a union.
+This allows arrays to store a mix of specific value types — as long as they all belong to the union.
+
+let mixed: (string | number)[] = ["Alice", 42, "Bob"];
+
+
+Here, each element must be either a string or a number, but not something else.
+
+You can also define arrays that hold values from a union of literal types, such as binary digits:
+
+let binaryDigits: (0 | 1)[] = [0, 1, 0, 1, 1];
+
+
+Every element here is guaranteed to be either 0 or 1.
+
+🔹 Arrays vs. Records
+
+Arrays in TypeScript behave similarly to objects created with index signatures, also known as records.
+Both represent collections with an unspecified number of entries where all values share the same type.
+
+For example:
+
+let stringArray: string[] = ["hi", "hello"];
+let stringRecord: Record<number, string> = { 0: "hi", 1: "hello" };
+
+
+✅ In both cases:
+
+Every element (or property value) is a string.
+
+The difference is mostly syntactic — arrays use numeric indexes automatically,
+while records can have arbitrary keys (numeric or string).
+
+🔹 Extracting the Element Type from an Array
+
+Just like with tuples, you can obtain the type of an array’s elements using the number index type:
+
+type Flags = boolean[];
+type FlagType = Flags[number]; // boolean
+
+
+This pattern tells TypeScript:
+
+“Give me the type of any element accessible by a numeric index.”
+
+It’s a simple and powerful way to extract the value type from an array type.
+
+🧠 Key Takeaways
+Concept	Description	Example
+Array Type Syntax	Two equivalent ways to define arrays	number[] or Array<number>
+Union Type Arrays	Arrays that accept multiple value types	`(string
+Literal Union Arrays	Restrict values to specific literals	`(0
+Array vs Record	Both represent collections of uniform type	string[] ≈ Record<number, string>
+Extract Element Type	Get the type of array elements	MyArray[number]
+🎯 Summary
+
+Arrays hold collections of values that share a common type.
+
+The element type can be a union, allowing limited mixed-type arrays.
+
+Arrays and records both represent indexed collections.
+
+Use Array[number] to extract element types easily.
