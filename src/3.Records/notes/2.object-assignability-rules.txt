@@ -1,0 +1,98 @@
+🌟 Extra Properties in Object Literals
+
+When you assign an object literal directly to a variable with a specific type in TypeScript,
+the compiler performs strict checks to ensure the object matches that type exactly — no missing or extra properties.
+
+🧩 Example: Type Definition
+type Person = {
+  name: string;
+  age: number;
+};
+
+
+Now let’s try to assign an object to a variable of type Person.
+
+✅ Correct Example
+const john: Person = {
+  name: "John",
+  age: 30,
+};
+
+
+✅ This is perfectly fine — the object matches the Person type exactly.
+
+❌ Incorrect Example — Extra Property
+const jane: Person = {
+  name: "Jane",
+  age: 25,
+  occupation: "Engineer", // ❌ Error: Object literal may only specify known properties
+};
+
+
+When you write an inline object literal, TypeScript will not allow extra properties that aren’t listed in the type.
+
+This is called the “excess property check.”
+
+💡 Important Rule
+
+This strict property check only applies to inline object literals (those created directly using { ... } syntax).
+
+If the object is created separately and then assigned, TypeScript behaves differently.
+
+🧱 Example: Predefined Object
+const extraDetails = {
+  name: "Alice",
+  age: 28,
+  occupation: "Designer", // Extra property
+};
+
+// Later we assign it to a Person type
+const person: Person = extraDetails; // ✅ Works fine
+
+
+✅ No error this time!
+
+Even though extraDetails has an additional property (occupation),
+TypeScript allows this assignment because:
+
+The variable extraDetails was not created inline.
+
+The Person type only defines the minimum required properties (name and age).
+
+🧠 Key Insight
+
+A type like Person defines the minimum shape that an object must have.
+An object may contain additional properties, and TypeScript will usually allow that —
+unless the object is created inline.
+
+⚠️ Why This Matters
+
+The excess property check exists to help catch unintended mistakes,
+such as typos or wrong property names, when writing object literals directly.
+
+For example:
+
+const bob: Person = {
+  name: "Bob",
+  agge: 40, // ❌ Typo! “agge” is not “age”
+};
+
+
+TypeScript flags this right away because you might have made a typo.
+
+🧩 Summary
+Situation	Allowed?	Explanation
+Inline object with extra properties	❌ No	TypeScript enforces excess property check
+Assigned object (predefined variable) with extra properties	✅ Yes	Only minimum required fields are checked
+Object missing required properties	❌ No	Must include all required keys
+Object with correct shape	✅ Yes	Matches the type perfectly
+
+🎯 In Short
+
+Inline object literals are strictly checked — no extra properties allowed.
+
+Predefined objects are more flexible — extra fields are ignored if the required ones exist.
+
+A type defines the minimum structure an object must have, not the exact structure.
+
+The goal is to help catch mistakes early, not to restrict valid object shapes.

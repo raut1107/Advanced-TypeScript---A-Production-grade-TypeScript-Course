@@ -1,0 +1,86 @@
+🌟 Extracting Property Types with Square Brackets
+
+In TypeScript, you can extract the type of a specific property from an existing object type
+by using square bracket notation ([]).
+
+This allows you to reuse types dynamically — you don’t have to rewrite the property’s type manually.
+
+🧩 Example: Basic Type Definition
+type User = {
+  username: string;
+  experience: number;
+  premium: boolean;
+};
+
+
+Let’s say we want to get the type of the experience property.
+
+🎯 Extracting a Single Property Type
+type ExperienceType = User["experience"];
+
+
+✅ Here, ExperienceType will be of type number.
+
+You can think of this syntax as saying:
+
+“From the User type, pick the type of the property called experience.”
+
+💡 Key Rule
+
+Use square brackets [] when working at the type level in TypeScript.
+
+Use dot notation . only when accessing actual values in JavaScript code.
+
+For example:
+
+// Type-level (TypeScript)
+type PremiumType = User["premium"]; // ✅ boolean
+
+// Value-level (JavaScript)
+const user: User = { username: "Alice", experience: 3, premium: true };
+console.log(user.premium); // ✅ true
+
+
+❌ User.premium is invalid at the type level — you must use User["premium"].
+
+⚙️ Combining Multiple Property Types
+
+Sometimes you may want to create a type that includes multiple properties from the same object.
+You can achieve this using a union of keys inside the brackets.
+
+type BasicInfo = User["username" | "experience"];
+
+
+✅ BasicInfo will be a union type:
+
+string | number
+
+
+It behaves the same as if you manually combined them:
+
+type BasicInfo = User["username"] | User["experience"];
+
+🧠 Why This Is Useful
+
+Keeps your code DRY (Don’t Repeat Yourself).
+
+Helps ensure consistency when a property’s type changes —
+you only update it once in the original definition.
+
+Makes it easier to build reusable utility types and generic structures.
+
+🧩 Summary
+Concept	Syntax	Example	Result
+Extract single property type	TypeName["key"]	User["premium"]	boolean
+Combine multiple property types	TypeName["key1" | "key2"]	User["username" | "experience"]	string | number
+Value access (runtime)	object.key	user.premium	Actual value
+
+🎯 In Short
+
+Use square brackets to access property types at the type level.
+
+Use dot notation only with actual JavaScript objects.
+
+You can form unions of property types by combining multiple keys.
+
+This is a clean, safe, and powerful way to reference existing type definitions.

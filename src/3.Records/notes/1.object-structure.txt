@@ -1,0 +1,149 @@
+🌟 Objects and Records in TypeScript
+
+In TypeScript, two very useful data structures are Objects and Records.
+They play an important role when working with types at a higher level, especially when you want to model structured data in your applications.
+
+🔹 Objects vs Records — The Big Picture
+
+Concept	Description
+Object types	Used for defining a fixed set of properties — each property has its own defined type.
+Record types	Used for defining a dynamic collection of key-value pairs — all keys share the same type of value.
+🧩 Example: Object Type
+
+Here’s a simple object type that defines two fixed properties:
+
+type ExampleObject = {
+  flag: boolean;
+  count: number;
+};
+
+
+✅ ExampleObject must have exactly two properties:
+
+flag → a boolean
+
+count → a number
+
+🗺️ Example: Record Type
+
+In contrast, a Record is like a map — where every key is of the same type, and every value is of another type.
+
+type ExampleRecord = Record<string, number>;
+
+
+✅ Meaning:
+
+Every key is a string
+
+Every value is a number
+
+You can have any number of keys
+
+For example:
+
+const scores: ExampleRecord = {
+  alice: 95,
+  bob: 87,
+  charlie: 100,
+};
+
+
+🔸 Recap from Previous Lessons
+
+We’ve already seen that:
+
+Primitive types include number, string, and boolean.
+
+Literal types represent specific values like 42 or "hi".
+
+Structured types include objects and arrays.
+
+We can think of types as collections of possible values, similar to mathematical sets:
+
+never is an empty set (no values possible).
+
+unknown is a universal set (contains all possible values).
+
+Other types like number or string are subsets of unknown.
+
+🔹 Four Data Structures in TypeScript
+
+TypeScript provides four built-in structures to represent and organize data:
+
+Structure	Description
+Object	Fixed set of named properties
+Record	Dynamic set of properties with consistent value type
+Tuple	Fixed-length array with specific element types
+Array	Variable-length list of values of the same type
+🧱 Object Types in Action
+
+Object types define the shape or structure of JavaScript objects.
+The syntax is similar to how you write object literals in JS.
+
+Example:
+
+type Account = {
+  username: string;
+  balance: number;
+  verified: boolean;
+};
+
+
+✅ This Account type describes any object that has:
+
+username: string
+
+balance: number
+
+verified: boolean
+
+✅ Correct Example
+const karen: Account = {
+  username: "karen123",
+  balance: 500,
+  verified: true,
+};
+
+
+This object is valid, because it matches the structure and types defined by Account.
+
+❌ Incorrect Examples
+// Missing property "verified"
+const missingVerified: Account = {
+  username: "mark",
+  balance: 250,
+};
+
+// Wrong type for "balance"
+const wrongType: Account = {
+  username: "susan",
+  balance: "250", // ❌ should be a number
+  verified: false,
+};
+
+
+In the first example, verified is missing.
+
+In the second example, balance has the wrong type (string instead of number).
+
+🧠 Key Insight
+
+TypeScript enforces structural typing — meaning:
+
+An object is valid for a type if it has all the required properties with the correct types.
+
+So even if the object wasn’t declared using type Account, as long as it matches that structure, it is assignable to the Account type.
+
+🔍 Objects vs Records — Quick Comparison
+
+Feature	Object	Record
+Property names	Fixed and predefined	Dynamic and flexible
+Value types	Can vary per property	All values share the same type
+Example	{ username: string; age: number }	Record<string, number>
+Use case	Specific data models	Key-value maps or dictionaries
+
+🎯 In Short
+
+👉 Object types define a fixed structure with specific property names and types.
+👉 Record types define a flexible structure where every key maps to values of a single consistent type.
+👉 Both are essential for building clean, type-safe data models in TypeScript.

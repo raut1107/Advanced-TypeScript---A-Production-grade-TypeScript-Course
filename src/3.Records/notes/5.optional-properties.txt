@@ -1,0 +1,89 @@
+🌟 Optional Properties in TypeScript
+
+In TypeScript, you can specify that certain properties on an object might not exist.
+
+To do this, you simply add a question mark (?) after the property name.
+
+This tells TypeScript that the property is optional — it can be present or completely omitted.
+
+🧩 Example: Declaring Optional Properties
+type Article = {
+  headline: string;
+  categories?: string[];
+};
+
+
+✅ Here:
+
+headline is required
+
+categories is optional
+
+This means an object of type Article can look like either of these:
+
+const article1: Article = {
+  headline: "TypeScript Basics"
+};
+
+const article2: Article = {
+  headline: "Advanced Generics",
+  categories: ["Programming", "TypeScript"]
+};
+
+
+Both are perfectly valid.
+
+🧠 Why Not Use undefined Instead?
+
+You might wonder why we don’t simply define categories as a union type like this:
+
+type Article = {
+  headline: string;
+  categories: string[] | undefined;
+};
+
+
+Well, the problem here is that TypeScript expects every defined key to exist in the object —
+even if the value is undefined.
+
+That means you'd be forced to write:
+
+const article: Article = {
+  headline: "Optional Properties Explained",
+  categories: undefined
+};
+
+
+❌ This is less convenient and more verbose.
+
+✅ The Better Approach
+
+Using the question mark (?) syntax is cleaner and more natural:
+
+type Article = {
+  headline: string;
+  categories?: string[];
+};
+
+
+With this version:
+
+You can omit the categories key entirely.
+
+You can still access it safely, since TypeScript knows it might be undefined.
+
+🧩 Summary
+Concept	Syntax	Description
+Optional property	propertyName?: Type	Property may or may not exist
+Explicit undefined union	propertyName: Type | undefined	Property must exist, even if undefined
+Cleaner alternative	Use ?	Allows omission of the key entirely
+
+🎯 In Short
+
+Add ? after a property name to make it optional.
+
+Optional properties can be omitted completely.
+
+Avoid using Type | undefined when you want a truly optional field.
+
+The ? syntax makes code cleaner and avoids unnecessary keys.

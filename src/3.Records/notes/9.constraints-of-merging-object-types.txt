@@ -1,0 +1,135 @@
+🌟 Property Conflicts When Using Intersections in TypeScript
+
+Using intersections (&) to combine object types in TypeScript is powerful — but there’s an important detail you need to be aware of when two types share the same property name.
+TypeScript doesn’t simply pick one property — instead, it intersects their types.
+This can sometimes lead to surprising results.
+
+⚠️ When Shared Properties Clash
+
+If two object types both have a property with the same name, TypeScript intersects their types rather than overriding them.
+
+If those two property types don’t overlap, the result becomes the never type — which means no possible value can satisfy both.
+
+🧩 Example 1 — Conflicting Property Types
+type ContactInfo = {
+  phone: string;
+};
+
+type WorkInfo = {
+  phone: number;
+};
+
+type Employee = ContactInfo & WorkInfo;
+
+
+In this case:
+
+Both ContactInfo and WorkInfo define a property called phone.
+
+One expects a string, the other expects a number.
+
+When combined using &, the resulting type for phone becomes:
+
+string & number  →  never
+
+
+So now:
+
+const emp: Employee = {
+  phone: "12345" // ❌ Error: Type 'string' is not assignable to type 'never'
+};
+
+
+The result is an impossible-to-satisfy type, because a value cannot be both a string and a number at the same time.
+
+📘 Example 2 — A More Realistic Case
+
+Let’s look at two related types:
+
+type BookDetails = {
+  ISBN: string;
+  title: string;
+};
+
+type BookInventory = {
+  ISBN: number;
+  stock: number;
+};
+
+type Book = BookDetails & BookInventory;
+
+
+When you hover over Book.ISBN, TypeScript shows:
+
+Type 'string' is not assignable to type 'never'
+
+
+✅ Now that you understand intersections, you can see why —
+string & number → never.
+
+🧠 Why never Appears
+
+When intersecting object types, TypeScript merges properties with the same name.
+If their value types don’t overlap, it becomes impossible for a value to exist that satisfies both.
+Hence, the property type is reduced to never.
+
+🧩 Improving Error Messages with Interfaces
+
+Now imagine a teammate revisiting this code later.
+They hover over the error, and all they see is Type 'string' is not assignable to type 'never'.
+That doesn’t say why it’s happening.
+
+Here’s a better way to make the error more descriptive: use interfaces instead of type.
+
+💡 Example with Interfaces
+interface BookDetails {
+  ISBN: string;
+  title: string;
+}
+
+interface BookInventory {
+  ISBN: number;
+  stock: number;
+}
+
+interface Book extends BookDetails, BookInventory {}
+
+
+Now, the compiler shows this clearer and more descriptive error:
+
+Interface 'Book' cannot simultaneously extend types 'BookDetails' and 'BookInventory'.
+Named property 'ISBN' of types 'BookDetails' and 'BookInventory' are not identical.
+
+
+✅ This message tells you exactly why the intersection failed — the ISBN property types are not the same.
+
+⚙️ Why This Is Useful
+
+Using interface instead of type can provide:
+
+More descriptive compiler errors when property types conflict.
+
+Better type-checking performance, especially in large projects.
+
+Clearer intent, since interfaces are designed for defining object structures and hierarchies.
+
+🧩 Quick Recap Code
+// ❌ Using type — less clear error
+type Book = BookDetails & BookInventory;
+
+// ✅ Using interface — clearer, more descriptive error
+interface Book extends BookDetails, BookInventory {}
+
+🧠 Key Takeaways
+Concept	Behavior
+Intersection (&)	Combines all properties — overlapping ones are intersected
+Overlapping incompatible types	Becomes never, impossible to satisfy
+Interfaces	Provide clearer compiler error messages
+Recommendation	Use interface when defining object shapes meant to extend or merge
+🎯 Summary
+
+When you merge two object types with overlapping but incompatible property types, TypeScript assigns them the never type.
+
+This makes the resulting object unsatisfiable.
+
+By switching to interfaces and using the extends keyword, you can get more descriptive and human-friendly compiler errors — very helpful for future debugging or team collaboration.

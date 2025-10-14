@@ -1,0 +1,141 @@
+🌟 Modular Object Types and Reuse with Intersections & Interfaces
+
+We’ve already learned how to break down complex object types into smaller, modular, and reusable pieces using intersections (&).
+Now, we’ll see how to take that same concept even further — and how interfaces can achieve the same goal in a slightly different way.
+
+🧩 Example: Making Object Types Modular
+
+Suppose we have two object types — an Article and a Feedback.
+Both share some identical properties: id and postedAt.
+
+type Article = {
+  id: string;
+  postedAt: Date;
+  headline: string;
+  content: string;
+};
+
+type Feedback = {
+  id: string;
+  postedAt: Date;
+  comment: string;
+};
+
+
+At first glance, you can notice duplication here — both contain the same two properties (id and postedAt).
+
+💡 Time for a “light bulb” moment:
+Let’s extract these shared properties into a base type so both objects can reuse them.
+
+🔧 Step 1: Create a Base Type
+
+We’ll define a Base type that includes only the shared fields:
+
+type Base = {
+  id: string;
+  postedAt: Date;
+};
+
+🔗 Step 2: Combine Using Intersection
+
+Now, we can simplify both objects by using the intersection operator (&):
+
+type Article = Base & {
+  headline: string;
+  content: string;
+};
+
+type Feedback = Base & {
+  comment: string;
+};
+
+
+✅ Now both Article and Feedback automatically include id and postedAt, without repeating them.
+
+🧠 Step 3: Doing the Same Thing with Interfaces
+
+In TypeScript, interfaces can do exactly the same thing — but with a different syntax.
+
+Here’s the same example rewritten with interfaces:
+
+interface Base {
+  id: string;
+  postedAt: Date;
+}
+
+interface Article extends Base {
+  headline: string;
+  content: string;
+}
+
+interface Feedback extends Base {
+  comment: string;
+}
+
+
+🚀 Notice the differences:
+
+Interfaces don’t use the = sign.
+
+To combine or inherit properties, we use the extends keyword instead of the & operator.
+
+🧩 Step 4: Extending Multiple Interfaces
+
+One great feature of interfaces is that they can extend multiple interfaces at once —
+perfect for when you want to compose types from smaller pieces.
+
+For example:
+
+interface HasId {
+  id: string;
+}
+
+interface HasCreatedAt {
+  createdAt: Date;
+}
+
+interface Article extends HasId, HasCreatedAt {
+  headline: string;
+  content: string;
+}
+
+
+✅ Here, Article inherits properties from both HasId and HasCreatedAt.
+
+🧠 Why Use Interfaces?
+Feature	type + &	interface + extends
+Syntax	Uses & to combine	Uses extends
+Multiple inheritance	✅ Yes	✅ Yes
+Declaration merging	❌ No	✅ Yes
+Common usage	Utility types, unions	Class and API design
+🎯 Summary
+
+Extract shared fields into a base type or interface.
+
+Combine them using:
+
+& (for types), or
+
+extends (for interfaces).
+
+Interfaces support multiple extensions — great for modular design.
+
+Both methods help you avoid duplication and keep your code organized.
+
+🧩 Quick Recap Code
+interface Base {
+  id: string;
+  postedAt: Date;
+}
+
+interface Article extends Base {
+  headline: string;
+  content: string;
+}
+
+interface Feedback extends Base {
+  comment: string;
+}
+
+
+Both Article and Feedback now share the same base structure without any repetition 🎉

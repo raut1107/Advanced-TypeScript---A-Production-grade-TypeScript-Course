@@ -1,0 +1,92 @@
+🌟 Breaking Complex Types into Reusable Pieces (Intersection Types)
+
+Sometimes, it’s helpful to break up a complex type into smaller, reusable parts.
+In TypeScript, you can do this by defining separate object types and then merging them using the intersection operator (&).
+
+This approach lets you build larger, flexible types that combine all properties from multiple smaller ones.
+
+🧩 Example: Splitting and Combining Types
+
+Let’s say you want to create a type for a person by defining separate pieces of information:
+
+type Identity = {
+  id: number;
+};
+
+type PersonalInfo = {
+  firstName: string;
+  lastName: string;
+};
+
+type Permission = {
+  canAccess: boolean;
+};
+
+
+Each of these types describes one part of a person’s details.
+
+🔗 Combining Types Using Intersection
+
+Now, you can combine them to create a complete type:
+
+type UserProfile = Identity & PersonalInfo & Permission;
+
+
+✅ The UserProfile type now includes all properties:
+
+id
+
+firstName
+
+lastName
+
+canAccess
+
+Any object of this type must provide all these properties:
+
+const user: UserProfile = {
+  id: 1,
+  firstName: "Sanchita",
+  lastName: "Raut",
+  canAccess: true
+};
+
+⚙️ Creating Partial or Specialized Types
+
+You don’t have to combine all the smaller types every time.
+You can merge only some of them to form a lighter version:
+
+type BasicProfile = Identity & PersonalInfo;
+
+
+Now, a BasicProfile object only needs id, firstName, and lastName.
+
+const basicUser: BasicProfile = {
+  id: 2,
+  firstName: "Arjun",
+  lastName: "Patel"
+};
+
+🧠 Why This Is Useful
+
+Using intersections (&) makes your type system:
+
+Modular – you can reuse small pieces across different parts of your code.
+
+Consistent – shared pieces (like Identity) always mean the same thing.
+
+Maintainable – easy to extend or refactor large, complex types.
+
+🧩 Summary
+Concept	Syntax	Description
+Intersection	TypeA & TypeB	Combines all properties from both types
+Modular reuse	Define small object types	Build bigger types by merging smaller ones
+Example	type User = Identity & Info	Includes all fields from both
+
+🎯 In Short
+
+Use intersection types (&) to merge multiple smaller types.
+
+Great for creating modular, maintainable type definitions.
+
+You can mix and match to form different variations of complex types.
