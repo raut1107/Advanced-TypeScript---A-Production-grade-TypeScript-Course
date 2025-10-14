@@ -1,0 +1,91 @@
+🌟 Readonly Arrays in TypeScript
+
+In TypeScript, arrays are mutable by default, meaning they can be modified — you can push, pop, or directly assign elements.
+However, sometimes you want to prevent accidental modification of an array, especially when a function should only read from it.
+
+That’s where readonly arrays come in.
+They allow you to define arrays that cannot be changed — no pushing, popping, or reassigning values.
+
+🔹 The Problem — Unintended Array Mutation
+
+Let’s start with a simple function that logs messages:
+
+function logMessages(messages: string[]) {
+  for (const message of messages) {
+    console.log(message);
+  }
+
+  // ❌ Unsafe modification
+  messages.push("New message");
+  messages[0] = "Updated!";
+}
+
+
+This function accepts an array of strings, but notice that inside it, we’re modifying the array by:
+
+Adding a new message using .push()
+
+Updating an element using index access
+
+This could lead to unexpected side effects — since the original array passed from outside would now be altered.
+
+🔹 The Solution — Using readonly Arrays
+
+To prevent mutation, we can tell TypeScript that the array parameter should be readonly:
+
+function logMessages(messages: readonly string[]) {
+  for (const message of messages) {
+    console.log(message);
+  }
+
+  // ❌ Type error: Property 'push' does not exist on type 'readonly string[]'
+  messages.push("New message");
+
+  // ❌ Type error: Index signature in type 'readonly string[]' only permits reading
+  messages[0] = "Updated!";
+}
+
+
+✅ Explanation:
+
+Adding readonly before the type name (string[]) makes it immutable.
+
+Any attempt to push, pop, or reassign elements will cause a TypeScript compile-time error.
+
+🔹 Alternative Syntax — Using the ReadonlyArray Generic Type
+
+TypeScript also provides a generic utility type for creating readonly arrays:
+
+function logMessages(messages: ReadonlyArray<string>) {
+  for (const message of messages) {
+    console.log(message);
+  }
+}
+
+
+✅ This syntax is equivalent to using readonly string[].
+Both approaches ensure the same immutability — the difference is just stylistic.
+
+🔹 Example — Passing a Readonly Array
+
+When calling the function, you can safely pass any array:
+
+const logs = ["Info", "Warning", "Error"];
+logMessages(logs);
+
+
+Even though logs is a normal mutable array, inside the logMessages function, TypeScript treats it as readonly, ensuring that it cannot be changed accidentally.
+
+🧠 Key Takeaways
+Concept	Description	Example
+Readonly Modifier	Prevents mutation of arrays	readonly string[]
+Generic Equivalent	Alternative style for readonly arrays	ReadonlyArray<string>
+Mutation Prevention	Blocks .push(), .pop(), and direct assignments	messages.push("x") ❌
+Safe Functions	Ensures a function only reads, never writes	function logMessages(messages: readonly string[])
+🎯 Summary
+
+Use readonly arrays when you want to protect data from accidental modification.
+
+Both readonly string[] and ReadonlyArray<string> are functionally identical.
+
+This small addition can make your code safer, more predictable, and easier to reason about, especially in large projects.
