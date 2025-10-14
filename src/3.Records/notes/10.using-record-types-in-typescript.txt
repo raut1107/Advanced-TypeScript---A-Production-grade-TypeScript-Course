@@ -1,0 +1,103 @@
+🌟 Records in TypeScript
+
+Records in TypeScript are very similar to regular object types, but with one important difference:
+➡️ Every key in a record must have the same value type.
+
+This consistency makes records extremely useful when you need to guarantee that all properties share a single, uniform type.
+
+🧩 Example — Simple Record
+
+If you want to create a type where every property holds a boolean value, you can define it like this:
+
+type BooleanRecord = {
+  [key: string]: boolean;
+};
+
+
+✅ This declaration means that no matter what string you use as a key, its corresponding value will always be a boolean.
+
+⚙️ Using the Built-in Record Utility Type
+
+TypeScript provides a built-in generic called Record that does exactly the same thing:
+
+type BooleanRecord = Record<string, boolean>;
+
+
+Both of the above definitions are equivalent.
+
+🧠 How the Record Helper Works Internally
+
+Under the hood, the Record utility type is defined roughly like this:
+
+type Record<K extends keyof any, V> = {
+  [P in K]: V;
+};
+
+
+Here:
+
+K → represents the set of keys (a union of string, number, or symbol).
+
+V → represents the type of the values.
+
+The in keyword is part of a TypeScript feature called mapped types.
+It tells TypeScript to take each key in the union K and assign it the value type V.
+
+We’ll explore this mapped type syntax (in) more deeply in the next section.
+
+🧱 Restricting Keys to a Specific Set
+
+You can also limit which keys are allowed by providing a union of literal types.
+For example:
+
+type Permissions = Record<"read" | "write" | "execute", boolean>;
+
+
+This type enforces that your object must have exactly three properties —
+read, write, and execute — each with a boolean value.
+
+Example usage:
+
+const userPermissions: Permissions = {
+  read: true,
+  write: false,
+  execute: true
+};
+
+
+✅ Every key here is of type "read" | "write" | "execute",
+and every value is a boolean, just as the Record definition requires.
+
+🔍 Extracting the Value Type from a Record
+
+Since all properties in a record share the same value type, it’s easy to extract it.
+For instance:
+
+type BooleanRecord = Record<string, boolean>;
+
+// Extract the type of the values:
+type ValueType = BooleanRecord[string];
+
+
+Here, BooleanRecord[string] means:
+
+“Give me the type of any property whose key is a string.”
+
+So ValueType will resolve to boolean.
+
+🧠 Key Takeaways
+Concept	Description
+Record	A mapped type where all keys share the same value type
+Syntax	Record<K, V> where K = key type(s) and V = value type
+Mapped types	The in keyword loops over a union of keys to build the structure
+Value extraction	You can use indexing (Record[K]) to extract the value type
+Consistency	All properties in a Record have the same type
+🎯 Summary
+
+Records provide a concise and powerful way to define objects where every property value shares the same type.
+
+They can be created manually with index signatures or with the built-in Record helper.
+
+You can easily restrict keys, enforce uniform value types, and extract value types when needed.
+
+Records are especially handy for things like permission maps, status flags, or configuration objects with consistent property types.

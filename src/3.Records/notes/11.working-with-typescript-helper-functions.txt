@@ -1,0 +1,137 @@
+🌟 Utility Types in TypeScript
+
+TypeScript includes a collection of built-in utility types that make it easier to transform, extract, or modify existing object types.
+
+These utilities act like type helpers, letting you quickly create new variations of existing types without rewriting them manually.
+
+🧩 Example — Why Utility Types Are Useful
+
+Suppose you have a base object type:
+
+type Config = {
+  host: string;
+  port: number;
+  secure: boolean;
+};
+
+
+Instead of redefining similar types again and again, you can use TypeScript’s utility types to adjust this one dynamically.
+
+🔹 Partial<T>
+
+The Partial utility makes every property of a type optional.
+This is helpful when you want to allow incomplete objects (e.g., during updates or initialization).
+
+type PartialConfig = Partial<Config>;
+
+
+✅ Now PartialConfig is equivalent to:
+
+type PartialConfig = {
+  host?: string;
+  port?: number;
+  secure?: boolean;
+};
+
+
+This means you can safely omit any property:
+
+const c1: PartialConfig = { host: "localhost" }; // ✅ works fine
+
+🔹 Required<T>
+
+The Required utility does the opposite of Partial.
+It converts all optional properties into required ones.
+
+Example:
+
+type OptionalSettings = {
+  darkMode?: boolean;
+  notifications?: boolean;
+};
+
+type FullSettings = Required<OptionalSettings>;
+
+
+✅ Now, every property must be present:
+
+const settings: FullSettings = {
+  darkMode: true,
+  notifications: false
+};
+
+
+If you omit one, TypeScript will show an error.
+
+🔹 Pick<T, K>
+
+The Pick utility lets you create a new type by selecting specific properties from an existing one.
+
+This is especially useful when you only need a subset of an object’s properties.
+
+Example:
+
+type UserInfo = {
+  username: string;
+  email: string;
+  age: number;
+};
+
+type UserContact = Pick<UserInfo, "username" | "email">;
+
+
+✅ Result:
+
+type UserContact = {
+  username: string;
+  email: string;
+};
+
+
+You can now use UserContact when you only care about login or communication data, not the full user record.
+
+🔹 Omit<T, K>
+
+The Omit utility is the opposite of Pick.
+It creates a new type by removing one or more keys from an existing type.
+
+Example:
+
+type UserInfo = {
+  username: string;
+  email: string;
+  age: number;
+};
+
+type BasicUser = Omit<UserInfo, "age">;
+
+
+✅ Result:
+
+type BasicUser = {
+  username: string;
+  email: string;
+};
+
+
+So, if you want to hide or exclude certain properties (like private fields or internal data), Omit is your go-to helper.
+
+🧠 Key Takeaways
+Utility Type	Description	Example
+Partial<T>	Makes all properties optional	Partial<Config>
+Required<T>	Makes all properties required	Required<Settings>
+Pick<T, K>	Extracts a subset of keys	`Pick<User, "id"
+Omit<T, K>	Excludes specific keys	Omit<User, "password">
+🎯 Summary
+
+Utility types are built-in helpers that simplify creating variations of existing object types.
+
+Partial → optionalizes properties.
+
+Required → makes them mandatory.
+
+Pick → extracts specific ones.
+
+Omit → removes certain ones.
+
+Together, these make your TypeScript code more expressive, DRY, and type-safe.

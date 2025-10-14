@@ -1,0 +1,125 @@
+🌟 Intersections vs. Unions — How They Affect Object Keys in TypeScript
+
+When working with object types in TypeScript, combining them using intersections (&) or unions (|) produces very different results.
+Let’s explore how these combinations affect the keys and properties of your resulting types.
+
+🧩 Example: Two Simple Object Types
+
+Suppose you have two object types, each with its own properties:
+
+type Alpha = {
+  a: number;
+};
+
+type Beta = {
+  b: string;
+};
+
+🔗 Intersecting Object Types
+
+If we create a new type by intersecting them:
+
+type AlphaBeta = Alpha & Beta;
+
+
+The new type must satisfy both definitions — meaning, an object of type AlphaBeta must have both properties a and b.
+
+const example: AlphaBeta = {
+  a: 10,
+  b: "Hello"
+};
+
+
+✅ So, intersections combine all properties from both types.
+
+🔎 Checking Keys with keyof
+
+If you inspect the keys of this new type:
+
+type Keys = keyof AlphaBeta;
+
+
+You’ll get a union of all property names from both types:
+
+// Equivalent to:
+type Keys = "a" | "b";
+
+
+That’s because the intersection of two object types must include everything required by both.
+In other words, the resulting object must satisfy all properties.
+
+💡 Why Does This Happen?
+
+You can think of each type as a set of possible objects.
+
+Some objects in set Alpha may only have property a.
+
+Some in Beta may only have property b.
+
+When we take their intersection, the resulting type must include every property that might appear in either.
+So the result includes both keys — a and b.
+
+⚡ Now Let’s Look at Unions
+
+Now imagine two more object types:
+
+type Gamma = {
+  x: number;
+  shared: boolean;
+};
+
+type Delta = {
+  y: string;
+  shared: boolean;
+};
+
+
+If we create a union:
+
+type GammaDelta = Gamma | Delta;
+
+
+An object of this new type can be either a Gamma or a Delta.
+
+That means while it may have x or y, the only property guaranteed to exist in every possible case is the one they both share — in this example, shared.
+
+🔍 Example in Action
+function logSharedValue(value: GammaDelta) {
+  console.log(value.shared); // ✅ Safe
+  console.log(value.x);      // ❌ Error — not guaranteed
+}
+
+
+✅ shared is safe to access because it exists in both.
+❌ x or y cannot be accessed without a type check because they’re not shared across all variants.
+
+🧠 Key Takeaways
+Concept	Combines	Resulting Keys	Safe Access
+Intersection (&)	All requirements	All properties from both types	All properties required
+**Union (`	`)**	Either type	Only properties common to both
+🎯 Summary
+
+Intersections (&) merge everything — all properties are required.
+
+Unions (|) are more restrictive — only shared properties are guaranteed to exist.
+
+keyof on an intersection gives you all keys combined.
+
+keyof on a union gives you only shared keys (the overlap).
+
+Understanding this difference helps you write safer and more predictable TypeScript code.
+
+🧩 Quick Recap Code
+type Alpha = { a: number };
+type Beta = { b: string };
+type AlphaBeta = Alpha & Beta;
+// AlphaBeta → { a: number; b: string; }
+
+type Gamma = { x: number; shared: boolean };
+type Delta = { y: string; shared: boolean };
+type GammaDelta = Gamma | Delta;
+// GammaDelta → { shared: boolean; x?; y?; }
+
+
+✅ Intersections = Combine all
+✅ Unions = Only keep what’s common

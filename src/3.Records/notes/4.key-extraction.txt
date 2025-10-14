@@ -1,0 +1,103 @@
+🌟 The keyof Operator in TypeScript
+
+In TypeScript, the keyof operator gives you a union type containing all the keys of a given object type.
+
+You can think of it as a tool that lists every property name your object type has.
+
+🧩 Example: Basic Usage
+type Profile = {
+  username: string;
+  email: string;
+  active: boolean;
+};
+
+
+If you use the keyof operator on this type:
+
+type ProfileKeys = keyof Profile;
+
+
+✅ The result will be a union of string literal types:
+
+type ProfileKeys = "username" | "email" | "active";
+
+
+So ProfileKeys represents all possible property names of the Profile type.
+
+🧠 How It Works
+
+keyof extracts all property names (keys) from a type.
+
+The resulting type is a union of string literals.
+
+This is extremely useful when you want to work with property names dynamically.
+
+⚙️ Combining keyof with Indexed Access
+
+You can combine keyof with square bracket syntax (indexing)
+to extract the types of all the values from those keys.
+
+type ProfileValues = Profile[keyof Profile];
+
+
+✅ Here’s what happens step-by-step:
+
+keyof Profile → "username" | "email" | "active"
+
+Profile["username" | "email" | "active"] → string | string | boolean
+
+Simplifies to → string | boolean
+
+So:
+
+type ProfileValues = string | boolean;
+
+
+This means any property value in Profile will be either a string or a boolean.
+
+🧩 Defining a Reusable Generic Helper
+
+You can create a generic type function that extracts all value types
+from any object type.
+
+type ValuesFrom<T> = T[keyof T];
+
+
+✅ Usage example:
+
+type User = {
+  id: number;
+  name: string;
+  verified: boolean;
+};
+
+type UserValues = ValuesFrom<User>;
+
+
+Now UserValues becomes:
+
+number | string | boolean
+
+🧠 Why This Is Useful
+
+Helps you write reusable, type-safe utilities.
+
+Lets you work with dynamic keys without losing type safety.
+
+Makes generic functions and mappings much more flexible.
+
+🧩 Summary
+Concept	Syntax	Example	Result
+Get object keys as a union	keyof TypeName	keyof Profile	"username" | "email" | "active"
+Get value types	TypeName[keyof TypeName]	Profile[keyof Profile]	string | boolean
+Generic helper	type ValuesFrom<T> = T[keyof T]	ValuesFrom<User>	Union of all value types
+
+🎯 In Short
+
+keyof gives you all property names as a union of strings.
+
+Combine keyof with indexing ([]) to get all property value types.
+
+You can generalize this with a generic type helper like ValuesFrom<T>.
+
+This is a common and powerful pattern used across many TypeScript libraries.
