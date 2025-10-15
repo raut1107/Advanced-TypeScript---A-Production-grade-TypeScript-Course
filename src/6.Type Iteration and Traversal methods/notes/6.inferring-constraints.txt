@@ -1,0 +1,79 @@
+Type Constraints in Recursive Type Functions
+
+When writing advanced type functions in TypeScript, it’s often useful to restrict what types are allowed as inputs.
+
+These restrictions are called type constraints.
+
+Why Use Type Constraints
+
+Constraints act as rules for inputs of type functions.
+
+They catch mistakes early by enforcing expected types.
+
+Especially useful in recursive type functions to maintain type safety.
+
+Example: Appending to an Array
+type Append<T extends unknown[], V> = [...T, V];
+
+
+Here, T is forced to be an array of unknowns.
+
+This prevents invalid types from being passed to Append.
+
+Problem in Recursive Type Functions
+
+Suppose we have a type that extracts a list of titles from an array of profiles:
+
+type Profile = { title: string; name: string };
+
+type GetTitles<T extends Profile[]> = 
+  T extends [infer First, ...infer Others]
+    ? [First['title'], ...GetTitles<Others>] // ❌ TypeScript may lose type info for Others
+    : [];
+
+
+Problem:
+
+Others is inferred without the constraint that it must be an array of Profile.
+
+Recursive call fails type checking because Others may not automatically match Profile[].
+
+Solutions
+1. Constrain the Inferred Variable (TypeScript 4.7+)
+type GetTitles<T extends Profile[]> = 
+  T extends [infer First, ...infer Others extends Profile[]]
+    ? [First['title'], ...GetTitles<Others>]
+    : [];
+
+
+The extends Profile[] on Others explicitly enforces the constraint.
+
+Ensures TypeScript treats Others as a valid array of Profile.
+
+2. Use a Conditional Type to Cast
+type GetTitles2<T extends Profile[]> = 
+  T extends [infer First, ...infer Others]
+    ? [First['title'], ...(Others extends Profile[] ? GetTitles2<Others> : never)]
+    : [];
+
+
+Checks if Others is assignable to Profile[] before recursion.
+
+Returns never if the constraint is not satisfied.
+
+3. Use a Helper Type for Casting
+type Cast<T, U> = T extends U ? T : U;
+
+type GetTitles3<T extends Profile[]> =
+  T extends [infer First, ...infer Others]
+    ? [First['title'], ...GetTitles3<Cast<Others, Profile[]>>]
+    : [];
+
+
+Cast simplifies repeated type assertions for cleaner syntax.
+
+Summary
+
+All three versions (GetTitles, GetTitles2, GetTitles3) produce the same result: an array of titles.
+
+The added syntax ensures recursive variables are recognized as valid arrays, keeping type safety intact.

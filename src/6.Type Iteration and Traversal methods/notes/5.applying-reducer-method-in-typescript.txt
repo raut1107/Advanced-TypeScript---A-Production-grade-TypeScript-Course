@@ -1,0 +1,67 @@
+Reducing a Tuple in TypeScript
+
+A reduce operation processes a tuple by accumulating a result as it iterates over each element.
+
+Key Components of Tuple Reduction
+
+Accumulator (ACC)
+
+The starting value for the reduction.
+
+Can be any type that serves as the basis for transformation.
+
+Transformation Rule
+
+Defines how to update the accumulator based on each element of the tuple.
+
+General Pattern for Reducing a Tuple
+type Reduce<T extends readonly any[], ACC, F extends (acc: ACC, value: any) => ACC> =
+  T extends [infer First, ...infer Rest]
+    ? Reduce<Rest, F extends (acc: ACC, value: First) => infer R ? R : never, F>
+    : ACC;
+
+
+Step 1 – Split the tuple: separate the first element (First) from the rest (Rest).
+
+Step 2 – Update the accumulator: apply the transformation rule using First.
+
+Step 3 – Recurse: repeat the process on the Rest.
+
+Step 4 – Base case: return the final accumulator when the tuple is empty.
+
+Example: Convert Tuple of Key-Value Pairs to Object
+
+Suppose we have a tuple of key-value pairs:
+
+type ProductValues = [
+  ["id", number],
+  ["name", string],
+  ["price", number]
+];
+
+
+We want to reduce this tuple to an object type:
+
+type TupleToObject<T extends readonly [PropertyKey, any][], ACC = {}> =
+  T extends [infer Value, ...infer Rest]
+    ? Value extends [infer Key extends string | number | symbol, infer Val]
+      ? TupleToObject<Rest, ACC & { [K in Key]: Val }>
+      : ACC
+    : ACC;
+
+
+Explanation:
+
+Split the tuple: Value is the first key-value pair, Rest is the remaining pairs.
+
+Process the value: check that Value matches [Key, Val] and merge it into ACC.
+
+Recursion: call TupleToObject on Rest with the updated accumulator.
+
+Termination: when the tuple is empty, return ACC, which now contains all key-value pairs.
+
+Notes
+
+Key restriction: Key extends string | number | symbol ensures valid object keys.
+
+This recursive pattern is the standard for reduction in TypeScript tuples.
