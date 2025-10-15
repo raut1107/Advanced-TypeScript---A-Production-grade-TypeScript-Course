@@ -1,0 +1,60 @@
+Filtering a Tuple in TypeScript
+
+In this section, we’re going to talk about filtering a tuple.
+
+Filtering a tuple means retaining only the elements that match a given condition.
+
+Example Scenario
+
+Suppose we have a tuple of mixed types:
+
+type SomeValues = ["hello", true, "world", 42];
+
+
+We want to filter out only the string elements, so the result should be:
+
+["hello", "world"]
+
+Creating the Filter Type
+
+We can build a recursive filter type like this:
+
+type FilterStrings<T extends readonly any[]> =
+  T extends [infer First, ...infer Rest]
+    ? First extends string
+      ? [First, ...FilterStrings<Rest>]
+      : FilterStrings<Rest>
+    : [];
+
+
+Here’s what’s happening:
+
+Split the tuple into the First element and the Rest.
+
+Check the first element:
+
+If it extends string, include it in the resulting tuple.
+
+Otherwise, skip it.
+
+Recursively process the rest of the tuple.
+
+When the tuple is empty, return an empty tuple [].
+
+Testing the Filter
+type TestFilter = FilterStrings<SomeValues>;
+
+
+Hovering over TestFilter gives:
+
+["hello", "world"]
+
+Key Insights
+
+This pattern works for any filter condition.
+
+The only thing that changes is the conditional check in the First extends ... part.
+
+Everything else — splitting the tuple, recursion, and base case — stays the same.
+
+This is the general pattern for filtering tuples using recursive conditional types in TypeScript.

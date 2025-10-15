@@ -1,0 +1,172 @@
+🌟 Recursive Looping Pattern in TypeScript – The FindColumn Example
+
+In regular programming, we often loop over arrays using simple for or while loops.
+But in TypeScript’s type system, things work differently — we don’t have those imperative constructs.
+
+Instead, looping is achieved using recursion.
+The idea is to process a tuple one element at a time by splitting it into two parts:
+
+the first element (the “head”)
+
+and the remaining elements (the “tail”).
+
+We perform some operation on the head and then recursively process the tail.
+
+🔹 Setting Up the Example: A Data Table
+
+Imagine we have a data table where each column has:
+
+a unique key
+
+and a list of data entries.
+
+We can define it like this:
+
+type Column<T> = {
+  key: string;
+  entries: T[];
+};
+
+type DataTable = [Column<any>, ...Column<any>[]];
+
+
+Example:
+
+type UserTable = [
+  { key: "userName"; entries: string[] },
+  { key: "score"; entries: number[] },
+  { key: "active"; entries: boolean[] }
+];
+
+
+Here, each object represents a column, and the table is a non-empty tuple of such columns.
+
+🔹 The Goal
+
+We want to create a type function called FindColumn that:
+
+takes a table (our tuple of columns)
+
+and a key (K)
+
+returns the type of the entries property for the column with that key.
+
+If no column matches the key, it should return undefined.
+
+🔹 Step 1 – Splitting the Tuple
+
+The first step in any recursive type operation is destructuring the tuple using infer:
+
+type FindColumn<
+  Table extends DataTable,
+  K extends string
+> =
+  Table extends [infer First, ...infer Rest]
+    ? // process head and tail here
+      ...
+    : undefined;
+
+
+We check whether Table can be decomposed into a First element and a Rest of the remaining ones.
+
+🔹 Step 2 – Processing the Head (the First Element)
+
+Next, we check if the first element matches the target key:
+
+First extends { key: K; entries: infer E }
+  ? E
+  : FindColumn<Rest extends DataTable ? Rest : never, K>
+
+
+Explanation:
+
+If the first element’s key equals the K we’re looking for,
+we infer the type of its entries (as E) and return it.
+
+Otherwise, we recursively call FindColumn on the rest of the tuple.
+
+🔹 Step 3 – Base Case
+
+When the tuple is empty (no elements left to process), we simply return undefined:
+
+: undefined
+
+
+This prevents infinite recursion and serves as our stopping condition.
+
+🔹 Full Implementation
+type FindColumn<
+  Table extends readonly any[],
+  K extends string
+> =
+  Table extends [infer First, ...infer Rest]
+    ? First extends { key: K; entries: infer E }
+      ? E
+      : FindColumn<Rest, K>
+    : undefined;
+
+🔹 Testing the Type
+type UserTable = [
+  { key: "userName"; entries: string[] },
+  { key: "score"; entries: number[] },
+  { key: "active"; entries: boolean[] }
+];
+
+type UserNames = FindColumn<UserTable, "userName">; // string[]
+type Scores = FindColumn<UserTable, "score">;       // number[]
+type Active = FindColumn<UserTable, "active">;      // boolean[]
+type Missing = FindColumn<UserTable, "nonexistent">; // undefined
+
+
+✅ Results:
+
+"userName" → string[]
+
+"score" → number[]
+
+"active" → boolean[]
+
+"nonexistent" → undefined
+
+Everything works perfectly.
+
+🔹 Recursion Pattern Summary
+
+Every recursive type in TypeScript follows this same general pattern:
+
+Destructure the tuple
+
+T extends [infer Head, ...infer Tail]
+
+
+Capture the first element and the remaining ones.
+
+Process the head
+
+Perform some operation or condition check on the Head.
+
+Recurse on the tail
+
+If the head doesn’t match your condition, call the type recursively:
+
+FindColumn<Tail, K>
+
+
+Define a base case
+
+When no elements remain, return a fallback type (undefined, never, etc.).
+
+🧠 Key Takeaway
+
+Recursion in TypeScript is the functional alternative to loops.
+Instead of mutating state like for or while loops, you:
+
+destructure the tuple,
+
+process its head,
+
+and recurse on its tail.
+
+This FindColumn example captures the core pattern of type-level iteration in TypeScript,
+and once you understand it, you can build powerful type utilities that behave like loops —
+all computed entirely at compile time

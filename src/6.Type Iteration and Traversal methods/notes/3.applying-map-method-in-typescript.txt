@@ -1,0 +1,112 @@
+Mapping Over a Tuple in TypeScript
+
+In this section, we’re going to talk about mapping and how we can map over a tuple in TypeScript.
+
+Mapping a list simply means taking each element of that list and transforming it into something else.
+
+In TypeScript, when working with tuple types, you can map over them by recursively processing each element.
+
+Example Scenario
+
+Imagine you have a tuple of objects, and you want to extract a specific property from each one.
+
+For example, suppose you have a list of user objects and you want to produce a new tuple containing only their role.
+
+Let’s define a type:
+
+type UserList = [
+  { username: "user1"; role: "user" },
+  { username: "user2"; role: "admin" }
+];
+
+
+We want to convert this tuple of user objects into a tuple of roles:
+
+["user", "admin"]
+
+The Goal
+
+We want to convert this:
+
+[
+  { username: "user1"; role: "user" },
+  { username: "user2"; role: "admin" }
+]
+
+
+into this:
+
+["user", "admin"]
+
+
+But using a recursive map algorithm in TypeScript’s type system.
+
+Creating the Recursive Type
+
+We can achieve this by writing a recursive type that maps each element.
+
+Let’s define it:
+
+type MapRoles<List extends readonly any[]> =
+  List extends [infer First, ...infer Rest]
+    ? [ExtractRole<First>, ...MapRoles<Rest>]
+    : [];
+
+
+Here’s what’s happening:
+
+We check if the tuple can be deconstructed into a First element and a Rest (the tail).
+
+If yes, we transform the first element (using a helper type) and recursively call MapRoles on the rest.
+
+When the tuple is empty, the recursion stops, returning an empty tuple ([]).
+
+Creating the Helper Type
+
+Now, we define a helper type to extract the role property:
+
+type ExtractRole<T> =
+  T extends { role: infer R } ? R : "no-role";
+
+
+This checks:
+
+If T has a role property, infer its type.
+
+Otherwise, return "no-role" as a fallback.
+
+Testing the Type
+
+Now, let’s test it:
+
+type Test1 = MapRoles<UserList>;
+
+
+If you hover over Test1, you’ll see the resulting type:
+
+["user", "admin"]
+
+
+Exactly what we wanted!
+
+Recap of the General Algorithm
+
+The general pattern for mapping over a tuple in TypeScript is:
+
+Split the tuple into a head (First) and tail (Rest).
+
+Transform the First element using a helper type.
+
+Recursively call the same type on the Rest.
+
+Stop recursion when the tuple is empty.
+
+Key Insight
+
+Whenever you want to map over a tuple for transforming its elements and producing a new tuple, you can follow this same algorithm.
+
+The only part that changes each time is the transformation helper — the logic that defines what you do with each element.
+
+In our example, the transformation was extracting the type of a property (role) from an object.
+
+Everything else in the recursive structure stays the same
