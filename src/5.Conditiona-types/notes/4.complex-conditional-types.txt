@@ -1,0 +1,53 @@
+🌟 Nested Conditional Types – TypeScript
+
+Just like nested ternary operators in regular JavaScript, you can nest conditional types in TypeScript to handle multiple branches.
+
+This allows you to select a type based on several conditions.
+
+🔹 Example: Nested Conditional Type
+type StatusName<N> = 
+  N extends 0 ? "loading" :
+  N extends 1 ? "success" :
+  N extends 2 ? "rejected" :
+  "unknown";
+
+
+Checks multiple conditions in sequence:
+
+If N is 0 → "loading"
+
+If N is 1 → "success"
+
+If N is 2 → "rejected"
+
+Otherwise → "unknown"
+
+✅ Works like deeply nested ternaries in JavaScript.
+
+🔹 Alternative Approach: Object Mapping
+
+Nested ternaries can be hard to read.
+For fixed sets of literal values, you can use an object type mapping instead:
+
+type StatusMap = {
+  0: "loading";
+  1: "success";
+  2: "rejected";
+};
+
+type StatusName<N extends 0 | 1 | 2> = StatusMap[N];
+
+
+StatusMap defines all possible mappings.
+
+N is constrained: N extends 0 | 1 | 2 → ensures N is a valid key.
+
+Using StatusMap[N] retrieves the corresponding type.
+
+🎯 Notes
+
+Constraining the type parameter is essential.
+
+Without extends, TypeScript cannot guarantee that the key exists, raising an error.
+
+This pattern is cleaner and easier to maintain than deeply nested conditional types.

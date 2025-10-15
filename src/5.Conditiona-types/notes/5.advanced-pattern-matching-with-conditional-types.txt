@@ -1,0 +1,50 @@
+🌟 Pattern Matching with Conditional Types – TypeScript
+
+Conditional types in TypeScript can do more than comparing literals.
+They can check if a type fits a particular structure, similar to pattern matching in functional programming.
+
+🔹 Example: Check Object Shape
+
+Suppose you want to determine if a type represents a product.
+
+type IsProduct<T> = 
+  T extends { title: string; price: number } ? true : false;
+
+
+Checks if T has at least:
+
+title: string
+
+price: number
+
+Extra properties are ignored; only the required pattern matters.
+
+🔹 Nested Object Matching
+
+Pattern matching works with nested objects:
+
+type CustomerAccount<T> =
+  T extends { account: { id: string; balance: number } } ? true : false;
+
+
+Only requires minimum matching properties.
+
+Extra properties like currency or others are ignored.
+
+🔹 Branching on Tuples
+
+You can branch conditional types based on tuples:
+
+type CanModify<P, R> = 
+  [P, R] extends ["standard" | "premium", "moderator" | "admin"] ? true : false;
+
+
+[P, R] is compared against a specific pattern.
+
+Only certain combinations are allowed:
+
+First element: "standard" or "premium"
+
+Second element: "moderator" or "admin"
+
+Conditional type evaluates to true only for allowed combinations.

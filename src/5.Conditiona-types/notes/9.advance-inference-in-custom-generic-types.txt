@@ -1,0 +1,71 @@
+🌟 Using infer with Custom Generic Types – TypeScript
+
+The infer keyword isn’t limited to built-in types — it can be applied to any generic type you define.
+It allows you to extract inner types from a composite or generic structure by pattern matching its shape.
+
+🔹 Example 1: Extracting Element Type from a Built-in Type (Set)
+
+You can extract the type of values stored in a Set using infer:
+
+type ExtractElement<S> =
+  S extends Set<infer E> ? E : never;
+
+
+✅ Example
+
+type Example = ExtractElement<Set<number>>; 
+// Result: number
+
+
+Here, if S matches Set<something>, the type inside (E) is captured and returned.
+
+🔹 Example 2: Applying infer to a Custom Generic Type
+
+Let’s define our own generic type:
+
+type Container<Value, Children> = {
+  value: Value;
+  children: Children[];
+};
+
+
+Now, we can extract both type parameters using infer:
+
+type UnwrapContainer<C> =
+  C extends Container<infer X, infer Y> ? [X, Y] : never;
+
+
+✅ Example
+
+type Example = UnwrapContainer<Container<string, number>>;
+// Result: [string, number]
+
+
+Here, infer X captures the first generic (Value), and
+infer Y captures the second (Children).
+
+🔹 Example 3: Extracting from a Generic Pair Type
+
+Let’s say we define a pair type:
+
+type Pair<A, B> = [A, B];
+
+
+We can create a helper type to extract both parts:
+
+type UnwrapPair<P> =
+  P extends Pair<infer Left, infer Right> ? [Left, Right] : never;
+
+
+✅ Example
+
+type Example = UnwrapPair<Pair<number, string>>;
+// Result: [number, string]
+
+🧠 Key Takeaway
+
+infer lets you pattern-match any generic type structure.
+
+You can extract any inner or parameterized type — not just for built-in types.
+
+It makes your type utilities more flexible and reusable.

@@ -1,0 +1,61 @@
+🌟 Type Constraints in Generic Types – TypeScript
+
+When writing generic type functions, it's often useful to restrict what types can be passed as arguments.
+
+These type constraints ensure that a type parameter can only be assignable to a certain type.
+
+🔹 Why Use Constraints?
+
+Constraints let you say:
+
+"This type must be assignable to that type."
+
+Without constraints, generic type parameters default to unknown, giving minimal type safety.
+
+With constraints, TypeScript can infer more precise types, especially for literal types.
+
+🔹 Example: Conditional Type Helper
+type If<Cond extends boolean, TrueType, FalseType> = Cond extends true ? TrueType : FalseType;
+
+
+Cond extends boolean → restricts the Cond type parameter to boolean or its subtypes (true, false, never).
+
+Ensures the type parameter is valid for the conditional type check.
+
+🔹 Generic Function Example
+function wrap<T extends string | number>(value: T) {
+  return { value };
+}
+
+
+T extends string | number → only allows string or number.
+
+Preserves literal type of input, giving more precise return types.
+
+const result = wrap("hello"); 
+// type of result: { value: "hello" }
+
+
+✅ Without the constraint, T could be any type, losing precision.
+
+🔹 Non-Empty Tuples Example
+function first<T extends [unknown, ...unknown[]]>(tuple: T) {
+  return tuple[0];
+}
+
+
+Constraint [unknown, ...unknown[]] → ensures non-empty tuple.
+
+Tracks length and types at each index.
+
+Guarantees that the function cannot be called with an empty array.
+
+🎯 Summary
+
+Use extends to constrain generic type parameters.
+
+Constrained generics give more precise type inference.
+
+Constraints help enforce non-empty arrays, specific literal types, or subtypes.
+
+Useful for creating safe and reusable generic functions.

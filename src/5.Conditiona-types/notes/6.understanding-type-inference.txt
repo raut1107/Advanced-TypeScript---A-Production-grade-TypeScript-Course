@@ -1,0 +1,64 @@
+🌟 The infer Keyword – TypeScript
+
+The infer keyword is a standout feature in the TypeScript type system.
+It lets you extract a sub-type from a complex type by pattern matching against it.
+
+Think of it like destructuring for types: capturing parts of a type into a new type variable.
+
+🔹 Basic Example: Extract a Property Type
+
+Suppose you have a type representing an object with name and role:
+
+type ExtractRole<T> = 
+  T extends { name: string; role: infer R } ? R : never;
+
+
+Checks if T is assignable to an object with:
+
+name: string
+
+role: some type
+
+If it matches, infers the type of role as R
+
+Otherwise, returns never
+
+🔹 Naming Flexibility
+
+The identifier used with infer is arbitrary.
+
+type GetUserRole<T> = 
+  T extends { name: string; role: infer U } ? U : never;
+
+
+Both ExtractRole and GetUserRole perform the same operation.
+
+The inferred variable is only accessible in the true branch of the conditional type.
+
+Accessing it in the false branch causes an error.
+
+🔹 Analogy
+
+Think of infer as TypeScript’s destructuring assignment for types.
+
+Just as you can extract properties from objects in JavaScript, you can extract property types using infer.
+
+🔹 Nested Properties
+
+infer is not limited to top-level properties.
+
+It works recursively on nested structures:
+
+type NestedRole<T> = 
+  T extends { user: { details: { role: infer R } } } ? R : never;
+
+
+Captures deeply nested property types without manually specifying each level.
+
+🎯 Notes
+
+infer is extremely powerful for type-level pattern matching.
+
+It enables creation of utility types that extract and reuse parts of complex types.
+
+Essential for advanced TypeScript type manipulation and type-safe abstractions.

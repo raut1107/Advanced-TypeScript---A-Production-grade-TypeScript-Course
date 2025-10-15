@@ -1,0 +1,52 @@
+🌟 Using infer with Tuples – TypeScript
+
+The infer keyword can also capture portions of a tuple's type by pattern matching its structure.
+
+This allows you to extract elements such as:
+
+The first element
+
+The remainder of the tuple
+
+Both the first and last elements
+
+🔹 Extracting the First Element
+type First<T extends any[]> = 
+  T extends [infer Head, ...any[]] ? Head : never;
+
+
+Checks if T starts with at least one element
+
+Head captures the first element (name is arbitrary)
+
+Returns never if the tuple is empty
+
+🔹 Extracting the Rest of the Tuple
+type Tail<T extends any[]> = 
+  T extends [any, ...infer Rest] ? Rest : [];
+
+
+Ignores the first element
+
+Rest captures all remaining elements (name is arbitrary)
+
+Returns an empty tuple if T is empty
+
+🔹 Extracting First and Last Elements
+type FirstAndLast<T extends any[]> = 
+  T extends [infer First, ...any[], infer Last] ? [First, Last] : [];
+
+
+Uses infer multiple times in a single conditional type
+
+Captures both the first and last elements
+
+Returns an empty tuple if the original tuple has fewer than two elements
+
+🎯 Notes
+
+infer with tuples provides powerful type-level pattern matching
+
+Enables creation of utility types to extract parts of tuples safely
+
+Works with any tuple length and can combine multiple inferred variables

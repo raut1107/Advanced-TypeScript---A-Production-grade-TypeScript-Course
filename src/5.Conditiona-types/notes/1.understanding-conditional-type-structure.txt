@@ -1,0 +1,51 @@
+🌟 Conditional Types in TypeScript
+
+Conditional types in TypeScript allow branching at the type level.
+They work similarly to the ternary operator in JavaScript, but instead of choosing runtime values, you choose between types.
+
+🔹 Basic Syntax
+type Conditional<Type> = Type extends Condition ? TrueType : FalseType;
+
+
+✅ Meaning:
+
+Type extends Condition → the condition being checked
+
+TrueType → type chosen if the condition is satisfied
+
+FalseType → type chosen if the condition is not satisfied
+
+This is similar to:
+
+condition ? valueIfTrue : valueIfFalse
+
+
+...but applied to types, not values.
+
+🔹 Example: Check if a Type is String
+type IsString<T> = T extends string ? "Yes" : "No";
+
+Usage:
+type Test1 = IsString<string>;  // "Yes"
+type Test2 = IsString<number>;  // "No"
+
+
+If T is assignable to string, the type resolves to "Yes".
+
+Otherwise, it resolves to "No".
+
+🔹 Key Notes
+Concept	Description
+Conditional Type	Branches types based on a condition
+Ternary Analogy	Condition ? TrueType : FalseType
+Expression-Based	No block statements; everything is written inline
+Functional Style	TypeScript favors expressions over traditional statements
+🎯 Summary
+
+Conditional types allow compile-time branching of types.
+
+Syntax is ternary-like: Type extends Condition ? TrueType : FalseType.
+
+Useful for creating type-safe utilities and dynamic type transformations.
+
+Ideal for situations like type checking, mapping types, and generic constraints.

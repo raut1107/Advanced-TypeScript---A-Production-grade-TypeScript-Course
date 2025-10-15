@@ -1,0 +1,60 @@
+🌟 Using infer with Function Types – TypeScript
+
+Function types in TypeScript are not just black boxes — they’re structured types that contain detailed information about:
+
+Their parameters (as a tuple of argument types)
+
+Their return value (as a single type)
+
+This means a function type can be viewed as an object containing both of these pieces of information.
+Using the infer keyword, we can extract either part directly from the function type.
+
+🔹 Extracting Function Parameters
+type MyParameters<F> = 
+  F extends (...args: infer A) => any ? A : never;
+
+
+Checks if F is a function type with arguments
+
+Uses infer A to capture the list of argument types as a tuple
+
+Returns never if F isn’t a function
+
+✅ Example
+
+type Example = (x: string, y: number) => boolean;
+type Params = MyParameters<Example>; 
+// Result: [string, number]
+
+🔹 Extracting Function Return Type
+type MyReturnType<F> = 
+  F extends (...args: any[]) => infer R ? R : never;
+
+
+Checks if F is a function type that returns something
+
+Uses infer R to capture the return type
+
+Returns never if not a valid function
+
+✅ Example
+
+type Example = (x: string, y: number) => boolean;
+type Result = MyReturnType<Example>; 
+// Result: boolean
+
+🧠 Why This Matters
+
+TypeScript’s standard library already includes these utilities:
+
+Parameters<T> → Extracts function parameter types
+
+ReturnType<T> → Extracts function return type
+
+But learning how to write them yourself helps you understand:
+
+The power of infer in pattern matching
+
+How conditional types can deconstruct complex type structures
+
+How to build your own type utilities for advanced scenarios

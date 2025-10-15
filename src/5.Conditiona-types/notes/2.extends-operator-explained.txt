@@ -1,0 +1,63 @@
+🌟 Conditional Types in TypeScript – Deep Dive
+
+In TypeScript, you can write type-level logic similar to if-else statements using conditional types.
+
+🔹 Conditional Type Syntax
+type Result = A extends B ? X : Y;
+
+
+✅ Meaning:
+
+A extends B → checks if type A is assignable to type B
+
+X → chosen if A is assignable to B (true branch)
+
+Y → chosen if A is not assignable to B (false branch)
+
+🔹 Key Notes
+
+Assignable, not equality
+
+A extends B does not check if A and B are exactly equal.
+
+It checks whether every value of A can be used where B is expected.
+
+Requires both branches
+
+You cannot use A extends B alone.
+
+Must provide both true and false outcomes in a conditional expression.
+
+Special cases
+
+never on the left side → collapses the conditional type to never.
+
+Literal types are assignable to their broader types.
+
+🔹 Example: Generic If Helper
+type If<Condition extends boolean, TrueType, FalseType> = Condition extends true ? TrueType : FalseType;
+
+Explanation:
+Part	Purpose
+Condition extends boolean	Constrains the type parameter to true or false only
+Condition extends true ? TrueType : FalseType	Performs the conditional check to select the branch
+
+✅ Note:
+
+extends is used twice here:
+
+Constraint on the type parameter (Condition extends boolean)
+
+Conditional check (Condition extends true)
+
+These two uses serve different purposes.
+
+🎯 Summary
+
+Conditional types allow branching at the type level.
+
+The extends keyword checks assignability, not exact equality.
+
+Both branches (true and false) are mandatory.
+
+You can combine this with generic constraints to create reusable type-level logic helpers.
