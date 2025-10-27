@@ -1,0 +1,73 @@
+Advanced Template Literal Types with Helper Modifiers and API Service Example
+
+TypeScript allows you to generate union strings dynamically using template literal types and apply string modifiers like Lowercase, Uppercase, Capitalize, and Uncapitalize. These are especially useful for API endpoints and structured object types.
+
+Example 1: Generating Endpoint Names
+type Action = "read" | "write";
+type Target = "order" | "customer";
+
+type EndpointName = `${Lowercase<Action>}${Capitalize<Target>}`;
+
+
+Lowercase<Action> converts "read" | "write" to lowercase (if needed).
+
+Capitalize<Target> converts "order" | "customer" to "Order" | "Customer".
+
+EndpointName produces the union of all possible combinations:
+
+"readOrder" | "readCustomer" | "writeOrder" | "writeCustomer"
+
+String Helper Types
+
+Lowercase<T> – converts all letters of a string type to lowercase.
+
+Uppercase<T> – converts all letters of a string type to uppercase.
+
+Capitalize<T> – converts the first letter of a string type to uppercase.
+
+Uncapitalize<T> – converts the first letter of a string type to lowercase.
+
+Example 2: Mapping Endpoints to Functions
+type APIService = Record<EndpointName, (...args: any[]) => any>;
+
+
+Generates an object type where:
+
+Keys = all endpoint names (EndpointName)
+
+Values = function types
+
+const apiEndpoints: APIService = {
+  readOrder: () => { /* ... */ },
+  readCustomer: () => { /* ... */ },
+  writeOrder: () => { /* ... */ },
+  writeCustomer: () => { /* ... */ }
+};
+
+
+If a key is missing, TypeScript will throw a compile-time error.
+
+Example 3: Using satisfies for Better Type Inference
+const apiEndpoints = {
+  readOrder: () => {},
+  readCustomer: () => {},
+  writeOrder: () => {},
+  writeCustomer: () => {}
+} satisfies APIService;
+
+
+Ensures apiEndpoints matches the APIService structure.
+
+Allows TypeScript to infer more specific types for each function.
+
+Missing methods or incorrect keys produce compile-time errors.
+
+Key Takeaways
+
+Template literal types combined with string modifiers allow flexible dynamic union generation.
+
+Record types can map all computed keys to corresponding function types.
+
+The satisfies keyword improves type safety while keeping type inference specific.
+
+This pattern is ideal for defining API services, endpoints, or structured configuration objects.

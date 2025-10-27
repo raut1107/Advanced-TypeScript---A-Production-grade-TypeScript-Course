@@ -1,0 +1,71 @@
+Template Literal Types with Union Types and Combinations
+
+TypeScript allows combining union types with template literal types to automatically generate all possible string combinations.
+
+Example 1: Size Options
+type SizeOption = "tiny" | "medium" | "large";
+type CSSClass = `size-${SizeOption}`;
+
+
+CSSClass becomes a union type of:
+
+"size-tiny" | "size-medium" | "size-large"
+
+TypeScript distributes union types over template literals automatically.
+
+Example 2: Two Sets of Choices
+type ThemeOption = "light" | "dark";
+type ButtonSize = "small" | "big";
+type ButtonVariant = `${ThemeOption}-${ButtonSize}`;
+
+
+ButtonVariant becomes a union of all combinations:
+
+"light-small" | "light-big" | "dark-small" | "dark-big"
+
+Useful for generating all possible variants at the type level.
+
+Example 3: Function with Union-Based Template Literals
+type Animal = "cat" | "dog";
+type Emotion = "happy" | "sad";
+
+function getEmoji(animal: Animal, emotion: Emotion) {
+  const key = `${animal}-${emotion}` as const;
+
+  switch (key) {
+    case "cat-happy": return "😸";
+    case "cat-sad": return "😿";
+    case "dog-happy": return "🐶";
+    case "dog-sad": return "🐶💧";
+    default: return assertUnreachable(key);
+  }
+}
+
+
+Combine parameters into a literal type using template literals.
+
+Using as const ensures TypeScript infers the exact string literal type, not just string.
+
+The switch statement benefits from autocomplete for all union combinations.
+
+Assert Unreachable for Exhaustiveness Checking
+function assertUnreachable(x: never): never {
+  throw new Error(`Unexpected case: ${x}`);
+}
+
+
+Ensures all union cases are handled.
+
+If a case is missing, TypeScript errors at compile time, enforcing exhaustive checks.
+
+Works perfectly with template literal types combined with union types.
+
+Key Takeaways
+
+Template literal types can combine union types to produce all string combinations automatically.
+
+Useful for CSS class names, component variants, function arguments, and exhaustive checks.
+
+Integrates well with type safety and autocomplete, especially in frontend and React projects.
+
+Using assertUnreachable ensures compile-time safety for missing branches.

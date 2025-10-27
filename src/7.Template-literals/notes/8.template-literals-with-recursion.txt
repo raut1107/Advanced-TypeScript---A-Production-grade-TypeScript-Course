@@ -1,0 +1,97 @@
+Converting snake_case Strings to camelCase Using Template Literals, Conditional Types, and Recursion
+
+TypeScript allows transforming strings from snake_case to camelCase by combining:
+
+Template literal types
+
+Conditional types
+
+Recursion
+
+Helper types (capitalize)
+
+Goal
+
+Convert "hello_world" → "helloWorld"
+
+Convert "hello_code_academy" → "helloCodeAcademy"
+
+Keep first word unchanged
+
+Capitalize subsequent words
+
+Step 1: Split the First Word
+type SnakeToCamel<Str extends string> =
+  Str extends `${infer Start}_${infer Rest}`
+    ? `${Start}${Capitalize<SnakeToCamel<Rest>>}`
+    : Str;
+
+
+Pattern Matching:
+
+Splits the string at the first underscore using ${infer Start}_${infer Rest}.
+
+Start = first word (kept unchanged)
+
+Rest = remaining string
+
+Base Case:
+
+If no underscore exists, returns the string as-is
+
+Step 2: Recursively Process Remaining Words
+
+SnakeToCamel<Rest> is called recursively to remove all underscores
+
+Each recursion step processes the next word in the string
+
+Step 3: Capitalize Remaining Words
+
+Use TypeScript’s built-in Capitalize<T> helper on the recursive result:
+
+`${Start}${Capitalize<SnakeToCamel<Rest>>}`
+
+
+Behavior:
+
+Keeps the first word (Start) unchanged
+
+Capitalizes all subsequent words
+
+Example Usage
+type Test1 = SnakeToCamel<"hello_world">; // "helloWorld"
+type Test2 = SnakeToCamel<"hello_code_academy">; // "helloCodeAcademy"
+type Test3 = SnakeToCamel<"snake_case_to_camel_case">; // "snakeCaseToCamelCase"
+type Test4 = SnakeToCamel<"alreadyCamel">; // "alreadyCamel" (unchanged)
+
+How It Works
+
+Conditional Type Check:
+
+Checks if the string contains an underscore (_)
+
+Splits into Start and Rest
+
+Recursion:
+
+Applies the same logic to Rest
+
+Removes underscores one by one
+
+Capitalization:
+
+Uses Capitalize to convert the first letter of each subsequent word
+
+Termination:
+
+When no underscores remain, recursion stops
+
+Takeaways
+
+Template literal types allow pattern-based string transformations
+
+Conditional types + recursion can handle arbitrary-length strings
+
+Built-in helpers like Capitalize simplify string case manipulation
+
+Very useful for type-safe conversion of naming conventions (e.g., snake_case → camelCase)
