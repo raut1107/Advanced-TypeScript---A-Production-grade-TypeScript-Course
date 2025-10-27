@@ -1,0 +1,63 @@
+Extracting the First and Last Words from a String Using Template Literals and Recursion
+
+TypeScript allows breaking a string into parts, including the first and last words, using template literal types, conditional types, and recursion.
+
+Step 1: Extract the Final Word
+type ExtractFinalWord<S extends string> =
+  S extends `${string} ${infer Tail}` ? ExtractFinalWord<Tail> : S;
+
+
+Behavior:
+
+Recursively removes the first word until no spaces remain.
+
+When there are no spaces left, the remaining string is returned as the final word.
+
+type LastWord = ExtractFinalWord<"Harry James Potter">; // "Potter"
+type LastWord2 = ExtractFinalWord<"John Ronald Reuel Tolkien">; // "Tolkien"
+
+Step 2: Extract First and Last Names
+type SplitFirstAndLast<Str extends string> =
+  Str extends `${infer First} ${infer Remainder}`
+    ? [First, ExtractFinalWord<Remainder>]
+    : never;
+
+
+Behavior:
+
+First = first word before the first space
+
+Remainder = rest of the string
+
+Uses ExtractFinalWord on Remainder to get the last word
+
+Returns a tuple [First, Last]
+
+type FullName = SplitFirstAndLast<"Harry James Potter">; // ["Harry", "Potter"]
+type FullName2 = SplitFirstAndLast<"John Ronald Reuel Tolkien">; // ["John", "Tolkien"]
+
+How It Works
+
+Pattern Matching:
+
+The string is matched against the template literal ${infer First} ${infer Remainder}.
+
+Captures the first word and the remaining string.
+
+Recursive Extraction:
+
+ExtractFinalWord is recursively called on Remainder until the last word is obtained.
+
+Tuple Result:
+
+Returns [First, Last], providing a type-safe extraction of first and last words.
+
+Takeaways
+
+Template literal types + infer allow splitting strings like tuples.
+
+Recursion lets you repeatedly process parts of a string.
+
+This approach can be extended to more complex parsing tasks.
+
+Useful for type-safe string manipulation, name extraction, or custom formatted strings.

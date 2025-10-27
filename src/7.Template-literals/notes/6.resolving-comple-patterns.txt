@@ -1,0 +1,67 @@
+Extracting Parts of Strings Using Template Literals and infer
+
+TypeScript allows splitting strings at specific points using template literal types and infer. This works similarly to splitting tuples.
+
+Example 1: Splitting at the First Space
+type DivideName<Str extends string> =
+  Str extends `${infer First} ${infer Last}` ? [First, Last] : never;
+
+
+Behavior:
+
+Splits the string at the first occurrence of a space.
+
+First = part before the first space
+
+Last = everything after the first space
+
+type Name1 = DivideName<"John Doe">;          // ["John", "Doe"]
+type Name2 = DivideName<"John Michael Doe">;  // ["John", "Michael Doe"]
+
+
+Note: Even if the input has multiple spaces, only the first space is used to split the string.
+
+Example 2: Splitting the First Character from the Rest
+type BreakString<Str extends string> =
+  Str extends `${infer First}${infer Rest}` ? [First, Rest] : never;
+
+
+Behavior:
+
+First = the first character of the string
+
+Rest = everything after the first character
+
+type Part1 = BreakString<"Hello">; // ["H", "ello"]
+type Part2 = BreakString<"L">;     // ["L", ""]
+
+
+Follows a left-to-right rule: pattern picks off the first character and leaves the remainder intact.
+
+Key Concept: Left-to-Right Matching
+
+Whether splitting strings or tuples, TypeScript processes the first element first and then handles the rest recursively.
+
+This makes infer consistent for both arrays and strings.
+
+type FirstElement<T extends any[]> =
+  T extends [infer First, ...infer Rest] ? [First, Rest] : never;
+
+
+Idea:
+
+Separate the first piece
+
+Handle the rest separately
+
+Works identically for tuples and strings.
+
+Takeaways
+
+infer can extract first elements from strings or tuples.
+
+Template literal types allow pattern-based string parsing.
+
+The splitting is left-to-right, using the first match of the pattern.
+
+Useful for string manipulation, parsing names, version numbers, or custom token processing.

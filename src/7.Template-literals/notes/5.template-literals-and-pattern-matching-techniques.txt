@@ -1,0 +1,45 @@
+Template Literal Types with infer and Conditional Types for String Parsing
+
+TypeScript allows you to extract parts of a string using template literal types, conditional types, and the infer keyword. This is useful for parsing names, version numbers, or any structured string.
+
+Example 1: Splitting Full Names
+type DivideName<Str extends string> =
+  Str extends `${infer First} ${infer Last}` ? [First, Last] : never;
+
+
+Str extends ${infer First} ${infer Last}``
+
+Captures everything before the space as First
+
+Captures everything after the space as Last
+
+Returns a tuple [First, Last] if the string matches, otherwise never.
+
+type Name1 = DivideName<"John Doe">; // ["John", "Doe"]
+type Name2 = DivideName<"SingleName">; // never
+
+Example 2: Parsing Version Numbers
+type ParseVersion<Version extends string> =
+  Version extends `${infer Major}.${infer Minor}.${infer Patch}`
+    ? [Major, Minor, Patch]
+    : never;
+
+
+Matches a version pattern with three components separated by dots.
+
+Returns a tuple [Major, Minor, Patch] if the string matches.
+
+Returns never if the string does not fit the pattern.
+
+type VersionA = ParseVersion<"3.5.6">; // ["3", "5", "6"]
+type VersionB = ParseVersion<"3.0">;   // never
+
+Key Takeaways
+
+infer allows capturing parts of a string inside template literal types.
+
+Use conditional types to return a transformed type if the pattern matches, otherwise never.
+
+This pattern works for names, version numbers, or any structured strings.
+
+Can be combined with other template literal operations for more advanced string manipulation.

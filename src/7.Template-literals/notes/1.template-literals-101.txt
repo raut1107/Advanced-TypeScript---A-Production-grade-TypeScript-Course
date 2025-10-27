@@ -1,0 +1,76 @@
+Template Literal Types in TypeScript
+
+TypeScript supports template literal types, a powerful feature that lets you combine types to form new string types, similar to JavaScript template literals at runtime.
+
+Basics: Combining String Types
+
+In JavaScript:
+
+const city = "Paris";
+const country = "France";
+const location = `${city}, ${country}`; // "Paris, France"
+
+
+Use backticks with ${} to combine strings.
+
+In TypeScript, we can do the same with types:
+
+type City = "Paris";
+type Country = "France";
+type Location = `${City}, ${Country}`; // "Paris, France"
+
+
+Hovering over Location shows the combined string type.
+
+Template literal types can combine multiple string literal types into one.
+
+Combining Numbers and Booleans
+
+Numbers or booleans can also be used inside template literal types.
+
+type Version = 3;
+type FileLabel = `file_v${Version}.txt`; // "file_v3.txt"
+
+type Flag = true;
+type StatusMessage = `status_${Flag}`; // "status_true"
+
+
+Types like Version or Flag are converted to string when used in template literals.
+
+Practical Example: Converting Numbers to Strings
+
+Sometimes we need to access object properties with keys that are string literals:
+
+type RecordData = {
+  "100": string;
+};
+
+type Code = 100;
+
+type GetValue<T, K extends keyof T> = T[K];
+
+type BadCase = GetValue<RecordData, Code>; // ❌ Error
+
+
+Code is a number literal, not automatically assignable to "100" (string literal).
+
+Solution: Use template literal types to convert number to string:
+
+type GoodCase = GetValue<RecordData, `${Code}`>; // ✅ Works
+
+
+Now TypeScript treats Code as a string "100" and retrieves the value type correctly.
+
+Summary
+
+Template literal types allow combining string, number, or boolean types into new string types.
+
+They are useful for:
+
+Generating dynamic type names
+
+Converting number/boolean literals to strings
+
+Ensuring type-safe property access in objects
+
+Syntax mirrors JavaScript template literals, using backticks and ${} placeholders.

@@ -1,0 +1,51 @@
+Template Literal Types: Patterns and Sets of Strings
+
+TypeScript allows creating types that represent sets of strings following a pattern using template literal types.
+
+Works like regular JavaScript template literals but at the type level.
+
+You can combine literal types and primitive types to form new string types.
+
+Example: Fixed Prefix Pattern
+type Name = "Alice";
+type LovesSomething = `Alice Loves ${string}`;
+
+
+LovesSomething is not a single string, but a set of strings.
+
+Matches any string that starts with "Alice Loves ", followed by any text.
+
+Can be thought of like a regex pattern: /^Alice Loves .*/.
+
+Combining Strings with Numbers or Booleans
+
+Template literal types can include numbers or booleans:
+
+type Message = `Year: ${number}`;
+type Status = `Flag is ${boolean}`;
+
+
+Every primitive type except symbol can be embedded.
+
+symbol cannot be used because it does not convert nicely to strings in JavaScript.
+
+Practical Uses
+
+Enforce that strings match a specific format:
+
+function connectServer(url: `http://localhost:${number}`) { /* ... */ }
+
+
+url must be a string starting with "http://localhost:" and followed by a numeric port.
+
+Template literal types provide type-safe string formatting at compile time.
+
+Summary
+
+Template literal types let you create pattern-based string types.
+
+They can include strings, numbers, booleans, or combinations.
+
+Useful for type-safe function parameters, dynamic type generation, and enforcing formats.
+
+Think of them as compile-time string templates or lightweight type-level regex patterns.
