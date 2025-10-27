@@ -1,0 +1,103 @@
+Mapped Types with Generics in TypeScript
+
+Mapped types let you create new object types based on existing ones — transforming their properties according to a rule.
+
+For example, we previously created a nullable version of a type (e.g., Car) using a mapped type.
+But that version worked only for one specific type.
+Now, let's make this concept generic and reusable for any object type.
+
+🔹 Basic Example – Nullable Object
+
+We want to create a mapped type that makes all properties of an object nullable.
+
+🧩 Code:
+type Car = {
+  model: string;
+  year: number;
+};
+
+// ✅ Making all properties nullable
+type NullableCar = {
+  [Prop in keyof Car]: Car[Prop] | null;
+};
+
+// Result:
+type NullableCar = {
+  model: string | null;
+  year: number | null;
+};
+
+🔹 Making It Generic
+
+Instead of hardcoding Car, we can create a generic mapped type that works with any object.
+
+🧩 Code:
+// Generic version
+type NullableObject<T> = {
+  [Prop in keyof T]: T[Prop] | null;
+};
+
+// Usage
+type NullableCar = NullableObject<Car>;
+
+
+✅ Now, you can reuse NullableObject<T> for any type — not just Car.
+
+🧠 How It Works
+
+keyof T → extracts all keys from the base object T as a union type.
+
+Prop in keyof T → loops over each key in that union.
+
+On the right side, we access and modify each property’s type:
+
+T[Prop] | null
+
+
+which means “keep the original type, but also allow null.”
+
+🔹 Another Example – Removing undefined from Each Property
+
+Suppose we have an object where each property can be undefined, and we want to make all properties definite.
+
+🧩 Code:
+type PartialConfig = {
+  mode?: "dark" | "light";
+  refreshRate?: number;
+};
+
+// ✅ Create a mapped type that removes `undefined`
+type DefiniteProperties<T> = {
+  [K in keyof T]: Exclude<T[K], undefined>;
+};
+
+// Usage
+type DefiniteConfig = DefiniteProperties<PartialConfig>;
+
+
+✅ Result:
+
+type DefiniteConfig = {
+  mode: "dark" | "light";
+  refreshRate: number;
+};
+
+⚙️ Summary
+Concept	Description
+keyof	Extracts all keys of a type as a union
+in	Iterates over each member in a union
+T[Prop]	Accesses the type of a specific property
+Exclude	Removes a specific type (like undefined) from a union
+Generic Mapped Type	Allows applying transformations to any type dynamically
+✅ Final Takeaway
+
+Mapped types + generics = extremely reusable type transformations.
+You can:
+
+Make all properties optional, nullable, readonly, or required
+
+Remove certain types (like undefined)
+
+Combine transformations using helpers like Exclude, Extract, etc.
+
+Would you like m

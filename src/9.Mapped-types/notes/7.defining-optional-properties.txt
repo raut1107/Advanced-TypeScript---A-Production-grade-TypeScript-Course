@@ -1,0 +1,147 @@
+Optional and Required Properties with Mapped Types
+
+TypeScript’s mapped types let you easily toggle between optional and required properties in an object —
+and this is done using the ? (optional) and -? (required) modifiers.
+
+🔹 Making Properties Optional
+
+We can build a mapped type that makes every property optional by adding the ? modifier.
+
+🧩 Example
+type MakeOptional<T> = {
+  [K in keyof T]?: T[K];
+};
+
+
+Here:
+
+keyof T extracts all property keys of the object T.
+
+[K in keyof T] loops through those keys.
+
+? marks each property as optional.
+
+🧪 Example 1 — Optional Object Properties
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+};
+
+type OptionalProduct = MakeOptional<Product>;
+
+
+✅ Result:
+
+type OptionalProduct = {
+  id?: number;
+  title?: string;
+  price?: number;
+};
+
+
+Each property of Product is now optional.
+
+🧪 Example 2 — Optional Arrays
+
+Mapped types also work on arrays!
+
+type NumbersArray = number[];
+
+type OptionalNumbers = MakeOptional<NumbersArray>;
+
+
+✅ Result:
+
+type OptionalNumbers = (number | undefined)[];
+
+
+Each element in the array becomes optional, meaning it can be number or undefined.
+
+🧪 Example 3 — Optional Tuples
+
+You can even apply it to tuples:
+
+type Point = [number, number];
+type OptionalPoint = MakeOptional<Point>;
+
+
+✅ Result:
+
+type OptionalPoint = [number | undefined, number | undefined];
+
+
+Each tuple element now includes undefined as an optional part.
+
+🔹 Making Properties Required
+
+Sometimes, you have a type with optional properties and want to make all of them required again.
+
+We can do that by using the -? modifier (which removes the optional flag).
+
+🧩 Example
+type MakeRequired<T> = {
+  [K in keyof T]-?: T[K];
+};
+
+
+Here:
+
+The -? removes the question mark modifier (?),
+making all properties required.
+
+🧪 Example 4 — Required from Partial
+
+Let’s take a partially optional type and make it required again:
+
+type PartialProduct = {
+  id: number;
+  title?: string;
+  price?: number;
+};
+
+type WiredProduct = MakeRequired<PartialProduct>;
+
+
+✅ Result:
+
+type WiredProduct = {
+  id: number;
+  title: string;
+  price: number;
+};
+
+
+All properties that were optional are now mandatory.
+
+🧰 Built-In TypeScript Utilities
+
+TypeScript already provides built-in mapped types that do exactly what we built manually:
+
+Purpose	Custom Type	Built-in Type
+Make all properties optional	MakeOptional<T>	Partial<T>
+Make all properties required	MakeRequired<T>	Required<T>
+🧪 Example — Built-in Equivalents
+type OptionalProduct2 = Partial<Product>;
+type WiredProduct2 = Required<PartialProduct>;
+
+
+✅ Same result as before — but using the built-in helpers.
+
+🧠 Summary
+Modifier	Effect	Example
+?	Makes a property optional	[K in keyof T]?: T[K]
+-?	Removes the optional modifier	[K in keyof T]-?: T[K]
+Partial<T>	Built-in helper for making all optional	Partial<Product>
+Required<T>	Built-in helper for making all required	Required<Product>
+🚀 Takeaway
+
+Mapped types give you total control over property modifiers:
+
+Add ? → make everything optional.
+
+Add -? → enforce all properties as required.
+
+Works with objects, arrays, and tuples.
+
+TypeScript’s built-in utilities (Partial and Required) are just shorthand for these patterns.

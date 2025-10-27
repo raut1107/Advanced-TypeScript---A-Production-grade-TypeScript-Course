@@ -1,0 +1,103 @@
+🧩 How Mapped Types Work in TypeScript
+
+Now that you know what mapped types are, let’s explore how they actually work under the hood.
+
+💡 The Core Idea
+
+Mapped types allow you to create new object types by mapping over a union type.
+
+In other words:
+
+You take each member of a union,
+
+And you turn it into a property in an object.
+
+Optionally, you can also transform the value for each key.
+
+🧱 Basic Syntax
+
+Here’s the general syntax of a mapped type:
+
+type NewType = {
+  [Key in UnionType]: ValueType;
+};
+
+
+Let’s break it down:
+
+Key in UnionType: tells TypeScript to loop over each element in the union.
+
+On the left-hand side, you define how the property name (key) should look.
+
+On the right-hand side, you define what the property’s value type should be.
+
+You can also rename the loop variable — it doesn’t have to be Key; it can be K, N, etc.
+
+⚙️ Example 1: Mapping a Union to an Object
+
+Let’s start with a simple example.
+
+type Numbers = 1 | 2 | 3;
+
+type NumberMap = {
+  [N in Numbers]: N;
+};
+
+
+If you hover over NumberMap, TypeScript will show:
+
+type NumberMap = {
+  1: 1;
+  2: 2;
+  3: 3;
+}
+
+
+✅ We just created an object type by looping over each member of the union.
+
+🧠 Key Insight
+
+The left side (before :) defines the property key.
+
+The right side (after :) defines the property value.
+
+You can use the loop variable (like N) anywhere on the right-hand side to reference the current key.
+
+⚙️ Example 2: Transforming Values
+
+We can use template literals to make things more dynamic.
+
+type Numbers = 1 | 2 | 3;
+
+type NumbersWithInfo = {
+  [N in Numbers]: `The number is ${N}`;
+};
+
+
+Now, TypeScript will infer:
+
+type NumbersWithInfo = {
+  1: "The number is 1";
+  2: "The number is 2";
+  3: "The number is 3";
+}
+
+
+Pretty neat, right? 🎯
+
+🧩 Summary
+
+Mapped types turn union types into object types.
+
+The in keyword is what lets TypeScript iterate over the union.
+
+You can use template literals, conditional logic, or transformations on either side of the mapping.
+
+The value side can be:
+
+The key itself (like N)
+
+Or an expression involving the key (like `The number is ${N}`)
+
+Mapped types are incredibly powerful — they let you automate the creation of complex type structures based on simple unions.
+In the next lessons, you’ll see how this idea extends into key remapping, value transformation, and recursive mapping.
