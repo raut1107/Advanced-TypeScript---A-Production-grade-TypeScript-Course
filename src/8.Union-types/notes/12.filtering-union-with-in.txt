@@ -1,0 +1,85 @@
+────────────────────────────────────────────
+📘 LESSON: Narrowing Union Types Using the "in" Operator
+────────────────────────────────────────────
+
+Let’s see another example of **filtering** — specifically, **narrowing down a union type**.
+
+Suppose we have a `BookingResponse` type that represents the outcome of a booking request.
+
+It’s a union of two possible objects:
+- One that contains a **confirmation** property, and  
+- Another that contains an **error** property.
+
+────────────────────────────
+🔹 Example: BookingResponse Union
+────────────────────────────
+
+```ts
+type BookingResponse =
+  | { confirmation: { asset: string } }
+  | { error: string };
+Now imagine a function that receives a BookingResponse and performs logic depending on which branch it is.
+
+────────────────────────────
+🔹 Without Narrowing
+────────────────────────────
+
+ts
+Copy code
+function handleBooking(response: BookingResponse) {
+  console.log(response.confirmation.asset);
+  console.error(response.error);
+}
+If you try this, TypeScript will complain:
+
+❌ Property 'confirmation' does not exist on type '{ error: string; }'
+❌ Property 'error' does not exist on type '{ confirmation: { asset: string; }; }'
+
+That’s because response could be either of the two branches,
+and TypeScript prevents unsafe access to properties that don’t exist on all members.
+
+────────────────────────────
+🔹 Naive Fix (Not Recommended)
+────────────────────────────
+
+You might think about adding optional properties like this:
+
+ts
+Copy code
+type BookingResponse =
+  | { confirmation?: { asset: string }; error?: string };
+But that defeats the purpose of a discriminated union,
+and doesn’t give you proper type safety.
+
+────────────────────────────
+🔹 Correct Solution: Using the "in" Operator
+────────────────────────────
+
+Instead, we can use the in keyword to safely check for the existence of a property:
+
+ts
+Copy code
+function handleBooking(response: BookingResponse) {
+  if ("confirmation" in response) {
+    // ✅ Narrowed type: { confirmation: { asset: string } }
+    console.log("Booking confirmed for:", response.confirmation.asset);
+  } else {
+    // ✅ Narrowed type: { error: string }
+    console.error("Booking failed:", response.error);
+  }
+}
+When you use "confirmation" in response, TypeScript narrows the union:
+
+Inside the if block, response is inferred as { confirmation: { asset: string } }.
+
+Inside the else block, response is inferred as { error: string }.
+
+────────────────────────────
+✅ Summary
+────────────────────────────
+
+The in operator is a simple, powerful way to narrow down union types when working with objects.
+
+It checks if a property exists in an object at runtime and helps TypeScript infer the correct type branch.
+
+It’s especially useful for object-based discriminated unions like API responses or domain models.

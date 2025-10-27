@@ -1,0 +1,62 @@
+🟢 Understanding Union Types as Sets in TypeScript
+
+Hello dear students 👋
+Union types in TypeScript might seem like they add an extra layer of complexity — especially when we are writing generics.
+You might feel like you have to think about two different kinds of input types: single types and union types.
+
+But here is the great news — every type in TypeScript can actually be thought of as a union.
+
+🧩 Thinking of Unions as Sets
+
+We can usually think of unions as sets containing multiple types.
+For instance, we can think of this union type here, which has two members X and Y:
+
+type Union1 = "x" | "y";
+
+
+In runtime, you could imagine it as a set with two members:
+
+const union1 = new Set(["x", "y"]);
+
+🔹 Single-Member Union
+
+Let’s imagine that we have a type that has a single member:
+
+type Union2 = "x";
+
+
+Indeed, this is still a union, but it has only one member.
+At runtime, this could look like:
+
+const union2 = new Set(["x"]);
+
+
+Even though this union only contains one element, it still counts as a union — just one with a single value.
+
+🔸 The never Type as an Empty Set
+
+Now you might ask: what about the never type?
+
+You can think of never as an empty set.
+For example:
+
+type Union3 = never;
+
+
+This is also a union, but it simply has no elements.
+In runtime terms, this could be represented as:
+
+const union3 = new Set();
+
+🧠 Key Takeaway
+
+The main point is:
+
+When you start thinking of every type as a union — whether it contains zero, one, or many elements — everything about TypeScript’s type system begins to make more sense.
+
+This mindset unifies how we think about types.
+Instead of worrying about whether you are dealing with a single type or a union, you can treat everything as a union type.
+
+And remember —
+this concept of distributivity applies universally,
+whether you are dealing with one element or many.

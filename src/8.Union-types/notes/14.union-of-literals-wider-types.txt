@@ -1,0 +1,82 @@
+Union Types with Literal and Wider Types
+
+Sometimes, inside a union type that contains multiple literal types, you might also include a wider type (like number) that represents their parent type.
+
+Let’s look at an example 👇
+
+type ErrorCodes = 400 | 404 | 500;
+
+
+If you hover over ErrorCodes, you’ll see it’s exactly that — a union of literal numbers.
+
+But what happens if you include a wider type, such as number, in the union?
+
+type ErrorCodes = 400 | 404 | 500 | number;
+
+
+Now if you hover over ErrorCodes, you’ll notice something surprising:
+
+The entire union collapses into the wider type number.
+
+⚠️ Why This Is a Problem
+
+This can be really annoying because it breaks type inference and autocomplete.
+
+For example:
+
+type ErrorCodes = 400 | 404 | 500 | number;
+
+function handleError(code: ErrorCodes) {
+  // Some logic here
+}
+
+handleError( /* try autocomplete here */ );
+
+
+When you call handleError, you’ll notice that TypeScript no longer provides suggestions like 400, 404, or 500.
+It only knows that the parameter is of type number.
+
+However, if you remove number from the union:
+
+type ErrorCodes = 400 | 404 | 500;
+
+
+Now TypeScript gives you autocomplete suggestions for 400, 404, and 500 again ✅.
+
+🧠 The Trick (Unknown but Works!)
+
+There’s a strange but effective workaround that restores the literal inference even with a wider type.
+
+Wrap the wider type (number) in parentheses and intersect it with an empty object like this:
+
+type ErrorCodes = 400 | 404 | 500 | (number & {});
+
+
+Now if you hover over ErrorCodes, you’ll see it preserves the literal types (400 | 404 | 500) along with number.
+
+And if you use it again:
+
+function handleError(code: ErrorCodes) {
+  // logic here
+}
+
+handleError( /* autocomplete now works again! */ );
+
+
+🎉 The autocomplete suggestions for 400, 404, and 500 are back.
+
+📝 Summary
+
+When you add a wider type (like number) into a union with literals, TypeScript widens the whole union.
+
+This removes autocomplete and literal-specific type inference.
+
+Workaround:
+
+type MyUnion = Literal1 | Literal2 | (WiderType & {});
+
+
+This keeps the literal members intact and still includes the wider type.
+
+Nobody knows exactly why this works — it’s just a current TypeScript quirk.
+Future versions might fix this automatically.

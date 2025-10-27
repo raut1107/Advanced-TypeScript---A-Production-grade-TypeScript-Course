@@ -1,0 +1,112 @@
+────────────────────────────────────────────
+📘 LESSON: Filtering Union Types by Property
+────────────────────────────────────────────
+
+Imagine you have a system that shows different kinds of notifications.
+
+These notifications can come in various forms such as **messages**, **friend requests**, and **alerts**.
+
+We can represent them as a **union of object types**.
+
+────────────────────────────
+🔹 Example: Notification Union
+────────────────────────────
+
+```ts
+type Notification =
+  | { type: "message"; content: string }
+  | { type: "friend_request"; from: string }
+  | { type: "alert"; details: string };
+Now, suppose we want to display only messages and alerts on a certain screen.
+We want to filter this union type so that only notifications of those types remain,
+and others (like friend_request) are excluded.
+
+────────────────────────────
+🔹 Creating a Helper Type
+────────────────────────────
+
+We can create a helper type that picks out the union members having a particular type value:
+
+ts
+Copy code
+type SelectByType<Item, Allowed> =
+  Item extends { type: Allowed } ? Item : never;
+✅ What this does:
+
+It checks each member of the union (Item).
+
+If a member’s type matches one of the allowed values, it keeps it.
+
+Otherwise, it becomes never and is removed from the union.
+
+────────────────────────────
+🔹 Example: Selecting Specific Types
+────────────────────────────
+
+ts
+Copy code
+type ImportantNotifications = SelectByType<
+  Notification,
+  "message" | "alert"
+>;
+If you hover over ImportantNotifications,
+you’ll see that it includes only the objects where type is "message" or "alert".
+The friend_request object is excluded.
+
+────────────────────────────
+🔹 Using It in a Function
+────────────────────────────
+
+Let’s create a function that filters an array of notifications:
+
+ts
+Copy code
+function filterItems<
+  T extends { type: string },
+  Allowed extends T["type"]
+>(
+  items: T[],
+  allowed: Allowed[]
+): SelectByType<T, Allowed>[] {
+  return items.filter((item): item is SelectByType<T, Allowed> =>
+    allowed.includes(item.type as Allowed)
+  );
+}
+Here’s what happens:
+
+T represents a union of object types with a type property.
+
+Allowed is inferred automatically as a subset of T["type"].
+
+The function filters the array, keeping only allowed types.
+
+It returns an array of the filtered union members.
+
+────────────────────────────
+🔹 Example Usage
+────────────────────────────
+
+ts
+Copy code
+const allNotifications: Notification[] = [
+  { type: "message", content: "Hello!" },
+  { type: "friend_request", from: "Alice" },
+  { type: "alert", details: "Low battery!" }
+];
+
+const selected = filterItems(allNotifications, ["message", "alert"]);
+If you hover over selected, you’ll see that its type is inferred as:
+
+ts
+Copy code
+({ type: "message"; content: string } |
+ { type: "alert"; details: string })[]
+────────────────────────────
+✅ Summary
+────────────────────────────
+
+SelectByType filters a union based on a property’s value.
+
+It’s useful when you only want certain “kinds” of objects.
+
+Combining it with generic functions ensures type safety and strong autocompletion.

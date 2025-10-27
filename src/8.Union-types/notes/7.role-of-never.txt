@@ -1,0 +1,65 @@
+🟣 Understanding the never Type as an Empty Union in TypeScript
+
+In TypeScript, never is a special type that represents an empty union —
+it doesn’t contain any values at all.
+
+🔍 Recap — never in Conditional Types
+
+Previously, we learned that using never on the left-hand side of an extends keyword in a conditional type always results in never.
+
+Let’s revisit that with an example 👇
+
+🧩 Example: Basic Conditional Type
+type CheckAnswer<A> = A extends 50 ? true : false;
+
+
+If we test this with a few values:
+
+type Result1 = CheckAnswer<50>;   // ✅ true
+type Result2 = CheckAnswer<30>;   // ❌ false
+
+
+Everything seems normal —
+if A is 50, we get true, otherwise false.
+
+⚠️ Now What Happens with never?
+
+Let’s try passing never:
+
+type Result3 = CheckAnswer<never>;   // 🤔 What do we get?
+
+
+Surprisingly, instead of false, we get:
+
+type Result3 = never;
+
+🧠 Why Does This Happen?
+
+Since never is an empty union, there is nothing to distribute over.
+Think of it like trying to map over an empty array in JavaScript —
+you’ll simply get an empty array back because there’s nothing to process.
+
+💡 Analogy in JavaScript
+
+Here’s the equivalent behavior in JavaScript:
+
+const arr = [];
+const result = arr.map(x => x * 2);
+console.log(result); // []
+
+
+Because there’s nothing inside arr, the result is just an empty array.
+
+🔸 Conceptual Parallel
+TypeScript Concept	JavaScript Analogy	Result
+never (empty union)	[] (empty array)	Nothing to operate on
+Conditional type applied to never	Function mapped over empty array	Returns never / []
+🧩 Key Takeaway
+
+When you run a conditional type on never, it’s like trying to apply a function to each element of an empty array.
+There are no elements to apply it to —
+so the result is simply never.
+
+✅ In short:
+
+The never type behaves like an empty set — it represents nothing, and any operation over it results in nothing.

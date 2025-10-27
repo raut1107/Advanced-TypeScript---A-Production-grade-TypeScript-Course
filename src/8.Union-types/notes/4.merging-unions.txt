@@ -1,0 +1,80 @@
+Section Title:
+Merging and Reusing Union Types
+
+Short Description or Goal:
+Learn how to combine and reuse existing union types in TypeScript to avoid code duplication and make type definitions cleaner and easier to maintain.
+
+Step 1: Understanding the Scenario
+Imagine you have two functions:
+
+One handles all possible states (loading, idle, success, failed).
+
+Another handles only the completed states (success and failed).
+
+Example:
+
+function handleAllStates(state: string) {
+  // handles loading, idle, success, failed
+}
+
+function handleCompletedStates(state: string) {
+  // handles success, failed
+}
+
+
+Typing these directly with string is too broad, so we use union types to represent valid state values more precisely.
+
+Step 2: Defining Union Types for Each Case
+We can define one type for all states, and another for completed states:
+
+type State = "loading" | "idle" | "success" | "failed";
+type CompletedState = "success" | "failed";
+
+
+This works fine — but notice that "success" and "failed" are repeated in both types.
+That duplication can make code harder to maintain if more states are added later.
+
+Step 3: Merging Union Types to Avoid Duplication
+Instead of rewriting the same literal types, we can merge existing unions using the | operator.
+
+Example:
+
+type CompletedState = "success" | "failed";
+type State = CompletedState | "loading" | "idle";
+
+
+✅ Now State automatically includes all members of CompletedState plus the additional ones.
+If you hover over State in your IDE, you’ll see:
+
+type State = "success" | "failed" | "loading" | "idle";
+
+
+This keeps your code DRY (Don’t Repeat Yourself) and ensures consistency.
+
+Step 4: Combining Multiple Unions
+Sometimes, you may want to create multiple small union types and then merge them into a larger one.
+
+Example:
+
+type PendingState = "loading" | "idle";
+type CompletedState = "success" | "failed";
+type State = PendingState | CompletedState;
+
+
+✅ This creates a single State type composed of smaller, more focused union types.
+This structure is easier to manage and extend — you can modify or reuse smaller unions anywhere in your codebase.
+
+Notes / Tips:
+
+Union types can be merged or extended easily using the | operator.
+
+Always break down large unions into logical sub-unions for readability and reusability.
+
+Hovering over types in your editor (like VSCode) helps confirm what the merged union contains.
+
+Keeping your type definitions modular improves maintainability and reduces errors.
+
+Summary:
+Merging union types is a clean and efficient way to define reusable, modular type structures in TypeScript.
+Instead of repeating similar literal types across multiple definitions, you can compose them together using the | operator.
+This approach simplifies updates, reduces redundancy, and ensures that your type system stays organized as your application grows.
