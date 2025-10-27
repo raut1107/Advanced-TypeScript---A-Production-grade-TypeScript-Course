@@ -1,0 +1,77 @@
+🧭 Introduction to Mapped Types in TypeScript
+
+Welcome back, students!
+In this section, we’re going to talk about mapped types in TypeScript — what they are, and why they’re so useful.
+
+💡 What Are Mapped Types?
+
+As developers, we often work with JSON objects, especially when dealing with APIs.
+These objects might not always be in the format we need — so we often have to transform them to fit our application’s structure.
+
+For example:
+
+API responses may use snake_case keys.
+
+But our frontend app might prefer camelCase.
+
+Instead of manually defining multiple versions of similar types, TypeScript’s mapped types let us generate new types automatically — by transforming existing types.
+
+🧱 Basic Concept
+
+Mapped types let us create new types by iterating over each property of an existing object type and applying a transformation to the keys or values.
+
+Let’s look at an example 👇
+
+🧩 Example: Converting Snake Case to Camel Case
+
+Imagine we receive an API response like this:
+
+type APIResponse = {
+  product_name: string;
+  shop: {
+    shop_name: string;
+  };
+};
+
+
+Here, all keys are written in snake_case.
+But in our app, we want to work with camelCase — for example, productName and shopName.
+
+To automate this transformation, we can create a generic mapped type that converts snake_case keys to camelCase.
+
+⚙️ Defining a Generic Transformation
+
+Let’s say we define a utility type like this:
+
+type Camelize<T> = {
+  // For each key K in T, transform it into camelCase
+  [K in keyof T as CamelCase<K>]: T[K];
+};
+
+
+🧠 Don’t worry yet about the syntax — we’ll break it down in the upcoming lessons.
+
+This Camelize type takes an object type T, loops over its properties, and applies a transformation to each key name.
+
+🧪 Using the Transformation
+
+Now let’s apply this mapped type to our API response:
+
+type NewAPIResponse = Camelize<APIResponse>;
+
+
+If you hover over NewAPIResponse in your editor, you’ll notice that:
+
+The key product_name has been transformed into productName.
+
+The shop object still contains snake_case keys for now — we’ll handle nested transformations later.
+
+✅ What You Learned
+
+Mapped types let you create new types by transforming the structure of existing ones.
+
+They’re extremely helpful for converting data formats (like snake_case → camelCase).
+
+You can define generic transformations once and reuse them across your project.
+
+We’ll explore nested transformations and advanced use cases in the next lessons.

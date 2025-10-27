@@ -1,0 +1,95 @@
+iltering Object Keys in Mapped Types
+
+When working with objects in TypeScript, you can use mapped types to loop over each key of an object.
+But with the help of union types and utility types, you can even filter out certain keys or select specific ones dynamically.
+
+🔹 Example – Filtering Keys Using Exclude and Template Literals
+
+Let’s say you have a configuration object:
+
+type ServerConfig = {
+  apiEndpoint: string;
+  privateToken: string;
+  debugMode: boolean;
+};
+
+
+Now, for security reasons, you want to expose only the public settings to the client —
+that means we want to remove anything that starts with "private".
+
+🧩 Manual Filtering Using Mapped Types
+
+We can combine keyof, in, and Exclude to create a filtered mapped type.
+
+type PublicConfig = {
+  [Key in Exclude<keyof ServerConfig, `private${string}`>]: ServerConfig[Key];
+};
+
+
+✅ Result:
+
+type PublicConfig = {
+  apiEndpoint: string;
+  debugMode: boolean;
+};
+
+🧠 How It Works
+
+keyof ServerConfig → Produces a union: "apiEndpoint" | "privateToken" | "debugMode".
+
+Exclude<..., \private${string}`>→ Removes any keys that **start with"private"`**.
+
+[Key in ...] → Loops through the remaining keys.
+
+ServerConfig[Key] → Assigns the original type of each property.
+
+TypeScript then reconstructs a new type using only the filtered keys.
+
+🔹 Using Built-in Utility Types: Omit and Pick
+
+Instead of manually writing out the filter logic, you can use TypeScript’s built-in helper types.
+
+🧩 Example with Omit
+type UserSettings = {
+  theme: string;
+  language: string;
+  sensitiveToken: string;
+};
+
+// Exclude properties that start with "sensitive"
+type SafeSettings = Omit<UserSettings, `sensitive${string}`>;
+
+
+✅ Result:
+
+type SafeSettings = {
+  theme: string;
+  language: string;
+};
+
+🔹 Example with Pick
+
+Pick works the opposite way — instead of excluding, you explicitly choose which keys to keep.
+
+type SafeSettings2 = Pick<UserSettings, "theme" | "language">;
+
+
+✅ Result:
+
+type SafeSettings2 = {
+  theme: string;
+  language: string;
+};
+
+⚙️ Summary
+Helper	Purpose	Example
+keyof	Extracts keys of a type as a union	keyof ServerConfig → "apiEndpoint" | "privateToken" | "debugMode"
+Exclude	Removes keys from a union	Exclude<..., \private${string}`>`
+Omit	Removes properties from an object	Omit<User, "password">
+Pick	Selects only specific properties	Pick<User, "id" | "name">
+Template Literals	Match or pattern-filter keys	`private${string}`
+✅ Final Takeaway
+
+With mapped types and helpers like Omit, Pick, and Exclude,
+you can transform, filter, and reshape object types dynamically —
+without duplicating code or creating redundant interfaces.

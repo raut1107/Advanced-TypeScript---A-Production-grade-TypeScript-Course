@@ -1,0 +1,115 @@
+Mapped Types with Arrays and Tuples
+
+Mapped types aren’t limited to plain objects —
+they also work beautifully with arrays and tuples.
+
+This means you can transform each element of an array or tuple into a new structure using simple generic patterns.
+
+🔹 Wrapping Elements of Arrays or Tuples
+
+Let’s create a mapped type that wraps each element inside an object with a value property.
+
+🧩 Example
+type WrapElements<T extends readonly unknown[]> = {
+  [K in keyof T]: { value: T[K] };
+};
+
+
+Here’s how it works:
+
+We loop through all indices of the array/tuple using [K in keyof T].
+
+For each element, we build an object with { value: ... }.
+
+The type of value corresponds to the element’s original type.
+
+🧪 Example 1 — Array of Strings
+type MyStrings = string[];
+
+type WrappedStrings = WrapElements<MyStrings>;
+
+
+✅ Result:
+
+type WrappedStrings = {
+  [index: number]: { value: string };
+};
+
+
+So now, instead of each element being a plain string,
+each element is an object: { value: string }.
+
+🧪 Example 2 — Tuple Transformation
+type MyTuple = [number, boolean, 23];
+type WrappedTuple = WrapElements<MyTuple>;
+
+
+✅ Result:
+
+type WrappedTuple = [
+  { value: number },
+  { value: boolean },
+  { value: 23 }
+];
+
+
+Each tuple element is transformed into an object with the same corresponding type inside the value property.
+
+🔹 Conditional Mapping on Tuple Elements
+
+You can even use conditional types inside mapped types to perform advanced transformations —
+for example, extracting data patterns from tuple values.
+
+🧩 Example — Extracting Keys from Tuples
+
+Suppose you have a tuple of strings like this:
+
+type KeyTuple = ["key-123", "key-456", "blah-blah"];
+
+
+We want to extract just the numbers from strings that start with "key-".
+
+⚙️ Implementation
+type ExtractKeys<T extends readonly string[]> = {
+  [I in keyof T]: T[I] extends `key-${infer K}` ? K : T[I];
+};
+
+
+✅ Result:
+
+type RealKeysTuple = ExtractKeys<KeyTuple>;
+
+
+Hovering over RealKeysTuple shows:
+
+type RealKeysTuple = ["123", "456", "blah-blah"];
+
+🧠 How It Works
+
+T[I] → Accesses the value at index I of the tuple.
+
+extends \key-${infer K}`` → Checks if the element matches a pattern.
+
+infer K → Captures the part after "key-" (e.g., "123", "456").
+
+? K : T[I] → If it matches, return the captured key; otherwise, keep the original value.
+
+✅ Summary
+Concept	Description	Example
+Mapped over arrays/tuples	Loops over array indices	[K in keyof T]
+Conditional check	Filters or transforms based on pattern	T[K] extends \key-${infer K}``
+Infer keyword	Extracts part of a matched string	infer K
+Works on tuples too	Maintains tuple structure in output	[number, string] → [{value:number}, {value:string}]
+🚀 Takeaway
+
+Mapped types aren’t limited to objects —
+you can use them with arrays and tuples to:
+
+Wrap elements in custom shapes,
+
+Apply transformations,
+
+Extract information using template literals and conditional types.
+
+This unlocks extremely powerful type-level data transformations —
+all evaluated at compile time! 💡

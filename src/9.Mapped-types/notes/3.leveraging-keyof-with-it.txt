@@ -1,0 +1,84 @@
+Using keyof and in with Mapped Types
+
+We’ve seen that mapped types let us create new object types by looping over a union of keys.
+Now let’s explore how the keyof and in operators work together to make this possible.
+
+💡 The Core Idea
+
+The keyof operator takes an object type and gives you a union of its keys.
+
+The in keyword allows you to loop over that union to create a new type.
+
+You can then transform the value type of each property during this mapping.
+
+🧱 Example: Making All Properties Nullable
+
+Let’s start with a simple type:
+
+type Car = {
+  model: string;
+  year: number;
+};
+
+
+Now, suppose you want a new type where every property can also be null.
+You could manually write:
+
+type NullableCarManual = {
+  model: string | null;
+  year: number | null;
+};
+
+
+…but that’s repetitive and not scalable. Let’s automate it!
+
+⚙️ Using a Mapped Type
+
+We can create a generic mapped type to do this transformation:
+
+type NullableCar = {
+  [Prop in keyof Car]: Car[Prop] | null;
+};
+
+
+✅ Here’s what’s happening:
+
+keyof Car → gives the union "model" | "year".
+
+Prop in keyof Car → loops through each key ("model", then "year").
+
+On the right side, Car[Prop] → retrieves the type of that property (like string or number).
+
+We then add | null → making each property nullable.
+
+If you hover over NullableCar, TypeScript shows:
+
+type NullableCar = {
+  model: string | null;
+  year: number | null;
+}
+
+
+🎯 Boom — a fully transformed type with no manual repetition!
+
+🧠 Key Concepts
+Concept	Meaning
+keyof Car	Creates a union of all property keys in Car (`"model"
+in	Loops through each member of that union
+Car[Prop]	Accesses the type of the property currently being iterated
+`	null`
+🧩 Summary
+
+keyof extracts all the keys of an object as a union.
+
+in lets you iterate over that union inside a mapped type.
+
+The right-hand side lets you transform the value type — adding null, changing it, or even nesting it.
+
+Together, they make TypeScript’s mapped types a powerful transformation tool.
+
+So in short:
+
+keyof gives you the keys,
+in loops over them,
+and the mapped type lets you reshape your object’s structure in one clean step.
