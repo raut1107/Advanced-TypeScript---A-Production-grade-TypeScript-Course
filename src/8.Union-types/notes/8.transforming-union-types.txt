@@ -1,0 +1,111 @@
+🟣 Enforcing Distributive Behavior in Conditional Types
+
+Welcome back, students! 👋
+
+We’ve already learned that when we combine conditional types with union types,
+TypeScript applies the condition to each member of the union separately —
+and then merges all the transformed results back into a single union.
+
+In this lesson, we’ll explore how to enforce that distributive behavior when TypeScript doesn’t automatically apply it.
+
+🧩 Example: String Variants Type
+
+Let’s start with a simple type definition 👇
+
+type StringVariants<S extends string> = [Lowercase<S>, Uppercase<S>];
+
+
+This type receives a string S and returns a tuple containing:
+
+The lowercase version of the string.
+
+The uppercase version of the string.
+
+🧠 Testing It
+type SV1 = StringVariants<"Hi">;
+// Result: ["hi", "HI"]
+
+
+✅ Works perfectly — we get a tuple of lowercase and uppercase versions.
+
+⚠️ Now Let’s Try a Union
+
+What if we pass a union of strings instead?
+
+type SV2 = StringVariants<"Hi" | "Bye">;
+
+
+You might expect this result:
+
+// Expected:
+// ["hi", "HI"] | ["bye", "BYE"]
+
+
+But what you actually get is:
+
+// Actual:
+// [ "hi" | "bye", "HI" | "BYE" ]
+
+
+Uh oh 😅 — the results are mixed up.
+Instead of distributing over each member of the union,
+TypeScript applied the transformation to the union as a whole.
+
+🔍 Why Distribution Didn’t Happen
+
+By default, distributive behavior only happens in conditional types —
+not in plain type declarations like ours.
+
+So, when there’s no conditional check (extends ... ? ... : ...),
+TypeScript won’t distribute the transformation across union members.
+
+💡 The Fix — Introduce a Conditional Layer
+
+We can force distribution by adding a trivial condition —
+something that’s always true, such as S extends any ? ... : never.
+
+Here’s how it looks 👇
+
+type StringVariants<S extends string> =
+  S extends any
+    ? [Lowercase<S>, Uppercase<S>]
+    : never;
+
+
+Now, this condition ensures that:
+
+Each member of the union ("Hi" and "Bye")
+is processed separately.
+
+The results are merged back into a distributed union.
+
+✅ Testing Again
+type SV3 = StringVariants<"Hi" | "Bye">;
+// Result:
+// ["hi", "HI"] | ["bye", "BYE"]
+
+
+Perfect! 🎉
+Now we’re getting exactly what we wanted — the transformation applies to each member individually.
+
+🧠 Why This Works
+
+Adding S extends any introduces a distributive conditional:
+TypeScript internally expands the union like this:
+
+("Hi" extends any ? ["hi", "HI"] : never) |
+("Bye" extends any ? ["bye", "BYE"] : never)
+
+
+And then merges them together into one union.
+
+🔸 Key Takeaways
+
+✅ Distribution of union members happens only in conditional types.
+✅ To enforce it, wrap your type logic inside a condition like S extends any ? ... : never.
+✅ This ensures each member of a union is processed independently and merged cleanly.
+
+✅ In short:
+
+If you ever need your generic transformation to apply individually to each union member,
+just add an extends any check — it’s your key to distributive magic in TypeScript.

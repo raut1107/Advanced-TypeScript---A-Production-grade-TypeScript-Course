@@ -1,0 +1,122 @@
+────────────────────────────────────────────
+📘 LESSON: Filtering Union Types with Extract and Exclude
+────────────────────────────────────────────
+
+Filtering union types is very common in TypeScript.  
+That’s why TypeScript provides two very useful **built-in utility types**:
+- `Extract<T, U>`  
+- `Exclude<T, U>`
+
+These types allow us to **filter members** of a union **based on certain criteria** — without writing conditional types manually.
+
+────────────────────────────
+🔹 Example 1: Removing Non-String Members
+────────────────────────────
+
+Suppose we have a union type that mixes strings and numbers:
+
+```ts
+type Stages = "draft" | "published" | "archived" | 404;
+We only want to keep the string members and exclude the number.
+
+Using Extract, we can do this easily:
+
+ts
+Copy code
+type FilteredStages = Extract<Stages, string>;
+✅ Result:
+
+ts
+Copy code
+// "draft" | "published" | "archived"
+If you hover over FilteredStages, you’ll see that 404 (the number) has been removed.
+
+────────────────────────────
+🔹 Example 2: Extracting Members That Match a Pattern
+────────────────────────────
+
+Let’s say we have an Operations union representing possible CRUD operation names:
+
+ts
+Copy code
+type Operations = "getUser" | "getProduct" | "postOrder" | "postReview";
+We want to keep only operations starting with “get”.
+
+We can use Extract again — this time with template literal types to form a pattern:
+
+ts
+Copy code
+type FilteredOperations = Extract<Operations, `get${string}`>;
+✅ Result:
+
+ts
+Copy code
+// "getUser" | "getProduct"
+Here, `get${string}` means “any string that starts with ‘get’.”
+So only the matching union members are kept.
+
+────────────────────────────
+🔹 Example 3: Using Exclude
+────────────────────────────
+
+Exclude works in the opposite way of Extract.
+It removes members that match a certain condition.
+
+Let’s revisit our stages example:
+
+ts
+Copy code
+type FilteredStages2 = Exclude<Stages, number>;
+✅ Result:
+
+ts
+Copy code
+// "draft" | "published" | "archived"
+This gives the same result as before — but internally works in reverse.
+
+────────────────────────────
+🔹 How They Work Internally
+────────────────────────────
+
+If you hover over the built-in definitions:
+
+ts
+Copy code
+type Extract<T, U> = T extends U ? T : never;
+type Exclude<T, U> = T extends U ? never : T;
+So:
+
+Extract keeps members that extend U.
+
+Exclude keeps members that do not extend U.
+
+────────────────────────────
+🔹 Example 4: Excluding Members by Pattern
+────────────────────────────
+
+We can also combine Exclude with template literals:
+
+ts
+Copy code
+type FilteredOperations2 = Exclude<Operations, `post${string}`>;
+✅ Result:
+
+ts
+Copy code
+// "getUser" | "getProduct"
+Here, we’re removing all operations that start with "post".
+
+────────────────────────────
+✅ Summary
+────────────────────────────
+
+Extract<T, U> → keeps only members of T that extend U.
+
+Exclude<T, U> → removes members of T that extend U.
+
+You can combine both with template literal types for pattern-based filtering.
+
+These helpers make union filtering concise, clean, and readable.
+
+yaml
+Copy code

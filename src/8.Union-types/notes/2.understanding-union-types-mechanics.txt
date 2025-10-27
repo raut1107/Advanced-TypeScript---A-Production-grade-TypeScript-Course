@@ -1,0 +1,91 @@
+Section Title:
+Understanding Union Types in TypeScript
+
+Short Description or Goal:
+Learn how union types let you represent a value that can be one of several distinct types, helping you model real-world situations where data can take multiple valid forms.
+
+Step 1: What Are Union Types?
+Union types allow you to express that a value can belong to one of several types instead of just one.
+They’re written using the pipe (|) symbol to combine multiple possible types.
+
+Example:
+
+let personInfo: string | number;
+
+
+Here, personInfo can hold either a string or a number — nothing else.
+
+You can think of unions as a way of combining multiple sets of possibilities into a single type definition.
+
+Step 2: Union Types in Real Use
+Imagine you have a Person type like this:
+
+type Person = {
+  name: string;
+  age: number;
+};
+
+
+Now, if you want a variable that can store either the person’s name or their age, you can write:
+
+type PersonInfo = Person["name"] | Person["age"];
+
+
+✅ PersonInfo becomes a union of string | number, because name is a string and age is a number.
+
+Step 3: Unions with Template Literal Types
+Union types work beautifully with template literal types.
+
+For example, consider size options for a label:
+
+type Size = "small" | "medium" | "large";
+type LabelClass = `label-${Size}`;
+
+
+Here, each member of the union (small, medium, large) is inserted into the template literal, producing a new union type:
+
+"label-small" | "label-medium" | "label-large"
+
+
+This allows you to define all valid class name combinations in a single, type-safe way.
+
+Step 4: Unions in Object Property Access
+At runtime, you might have a configuration object like this:
+
+const settings = {
+  theme: "dark",
+  version: 2,
+  debug: true,
+};
+
+
+If you access a property based on a union of keys, for example:
+
+type SettingKeys = "theme" | "version" | "debug";
+let value = settings[Math.random() > 0.5 ? "theme" : "version"];
+
+
+TypeScript infers the type of value as the union of all possible property types — in this case,
+
+string | number | boolean
+
+
+This is because, from the type system’s viewpoint, any of those properties could be accessed.
+
+Step 5: Unions Represent All Possible States
+Consider this type:
+
+type Weather = "sunny" | "rainy" | "cloudy";
+
+
+At runtime, the weather variable can only be one of these values.
+But from TypeScript’s type-checking perspective, the compiler knows that all three options are valid possibilities.
+
+So when you use a union type, you’re telling TypeScript:
+
+“This value can be any one of these types, and all of them are valid possibilities.”
+
+Summary:
+Union types let you combine multiple valid possibilities into one flexible and safe type definition.
+They’re essential for describing dynamic data, conditional states, and patterns that can take multiple forms.
+By leveraging unions with features like template literal types, you can build expressive, type-safe models that precisely reflect your program’s logic and behavior.

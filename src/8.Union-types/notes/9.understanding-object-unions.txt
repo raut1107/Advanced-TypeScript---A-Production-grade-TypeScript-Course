@@ -1,0 +1,128 @@
+🟣 Extracting All Keys from a Union of Objects
+
+When working with objects in TypeScript, you might sometimes want to get all the keys that appear in any of the objects in a union.
+
+However, there’s a small gotcha:
+using the keyof operator directly on a union of objects will only give you the keys common to every member — not all unique keys.
+
+Let’s see this in action 👇
+
+🧩 Example: Two Object Types
+type ObjectA = {
+  x: string;
+  y: number;
+};
+
+type ObjectB = {
+  x: string;
+  z: boolean;
+};
+
+
+Here:
+
+Both objects share the key x.
+
+ObjectA has a y.
+
+ObjectB has a z.
+
+⚠️ Using keyof on a Union
+type CommonKeys = keyof (ObjectA | ObjectB);
+
+
+If we hover over CommonKeys, TypeScript gives us:
+
+// Result: "x"
+
+
+😮 Only x!
+That’s because keyof on a union type returns only the keys that exist in every member of the union.
+
+🎯 Goal
+
+We want all keys that appear in any object —
+so the result should be:
+
+// Expected: "x" | "y" | "z"
+
+💡 Solution: Distributive Conditional Type
+
+To make TypeScript process each union member separately,
+we can use a conditional type that forces distribution.
+
+Here’s how 👇
+
+type AllKeys<T> = T extends unknown ? keyof T : never;
+
+✅ How This Works
+
+The condition T extends unknown always passes.
+
+Because it’s a conditional type, TypeScript will:
+
+Take each member of the union one by one (ObjectA, then ObjectB).
+
+Apply keyof to each.
+
+Merge the results back into a union.
+
+🧠 Testing the Solution
+type Result = AllKeys<ObjectA | ObjectB>;
+
+
+If we hover over Result, we get:
+
+// Result: "x" | "y" | "z"
+
+
+🎉 Perfect! Now we have all keys from both objects.
+
+🔍 Behind the Scenes
+
+Here’s what TypeScript does internally:
+
+(ObjectA extends unknown ? keyof ObjectA : never) |
+(ObjectB extends unknown ? keyof ObjectB : never)
+
+
+Which becomes:
+
+("x" | "y") | ("x" | "z")
+// Simplifies to:
+"x" | "y" | "z"
+
+⚙️ Important Detail: Two Uses of T
+
+Notice that we used T in two places:
+
+type AllKeys<T> = T extends unknown ? keyof T : never;
+
+
+Are they the same?
+Not exactly.
+
+Position	Meaning
+Outer T	Represents the entire union (`ObjectA
+Inner T (inside conditional)	Represents each individual member (ObjectA then ObjectB).
+
+So the outer T is the whole set,
+while the inner T gets distributed one by one —
+and that’s how we get all keys.
+
+🧾 Summary
+
+✅ keyof on a union gives only common keys.
+✅ To get all keys, use a distributive conditional like:
+
+type AllKeys<T> = T extends unknown ? keyof T : never;
+
+
+✅ TypeScript then applies keyof to each union member separately
+and merges the results into one combined union.
+
+✨ In Short:
+
+If you ever need all keys from a union of objects —
+force distribution with a conditional type.
+It’s the magic trick that unlocks "x" | "y" | "z".

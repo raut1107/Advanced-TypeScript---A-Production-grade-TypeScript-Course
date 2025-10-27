@@ -1,0 +1,87 @@
+────────────────────────────────────────────
+📘 LESSON: Narrowing Down the Type of a Union
+────────────────────────────────────────────
+
+Welcome back, students.
+
+In this lesson, we’ll talk about **narrowing down** the type of a union in TypeScript.
+
+────────────────────────────
+🔹 Example Setup
+────────────────────────────
+
+Let’s start with a simple type:
+
+```ts
+type DataTypes = string | number | boolean;
+
+function parseData(data: DataTypes) {
+  // logic goes here
+}
+Here, data can be either a string, number, or boolean.
+
+However, sometimes inside our function we need to perform logic that only applies to one of those types — for example, we might want to call .length, which only exists on strings.
+
+────────────────────────────
+🔹 Using typeof for Narrowing
+────────────────────────────
+
+We can use the typeof keyword to narrow the type of a variable inside a scope:
+
+ts
+Copy code
+function parseData(data: DataTypes) {
+  if (typeof data === "string") {
+    console.log(data.length); // ✅ data is now a string
+  } else if (typeof data === "number") {
+    console.log(Math.sqrt(data)); // ✅ data is now a number
+  } else {
+    console.log(!data); // ✅ data is now a boolean
+  }
+}
+💡 Inside each branch, TypeScript automatically infers the correct type:
+
+In the first if, data is a string.
+
+In the second, it’s a number.
+
+In the final else, it’s a boolean.
+
+Outside these scopes, the type goes back to string | number | boolean.
+
+────────────────────────────
+🔹 Checking with Hover (in VS Code)
+────────────────────────────
+
+If you hover over data inside the if (typeof data === "string") block, you’ll see that it’s inferred as string.
+
+If you hover in the next block, you’ll see it’s a number.
+
+Outside all conditions, it’s inferred again as string | number | boolean.
+
+────────────────────────────
+🔹 Extracting Type Checks into Helper Functions
+────────────────────────────
+
+To make your code cleaner, you can extract type checks into small helper functions:
+
+ts
+Copy code
+const isString = (value: unknown): value is string => typeof value === "string";
+
+function parseData(data: DataTypes) {
+  if (isString(data)) {
+    console.log(data.length); // clearly a string
+  }
+}
+This makes your code easier to read, especially when you have nested if statements.
+
+────────────────────────────
+✅ Summary
+────────────────────────────
+
+Use typeof to narrow primitive unions like string | number | boolean.
+
+Each scope inside an if or else if narrows the type.
+
+You can use custom type guard functions like isString for better

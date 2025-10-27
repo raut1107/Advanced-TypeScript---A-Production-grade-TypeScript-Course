@@ -1,0 +1,89 @@
+Section Title:
+Distributive and Narrowing Behavior of Union Types
+
+Short Description or Goal:
+Understand how TypeScript operations distribute over union types and how type narrowing works during control flow to refine the possible types at runtime.
+
+Step 1: The Concept of Distribution in Unions
+A neat property of union types is that many operations in TypeScript automatically distribute over them — similar to how multiplication distributes over addition in mathematics.
+
+When you apply an operation (like a template literal or property access) to a union type, TypeScript applies that operation individually to each member of the union and then combines the results back into a new union type.
+
+Step 2: Distribution with Template Literals
+Let’s take this example:
+
+type ButtonType = "primary" | "secondary" | "danger";
+type ButtonClass = `btn-${ButtonType}`;
+
+
+Here’s what happens:
+
+TypeScript takes each value of ButtonType ("primary", "secondary", "danger")
+
+It inserts them into the template string btn-${...}
+
+Then it unions all possible results
+
+✅ The final type becomes:
+
+"btn-primary" | "btn-secondary" | "btn-danger"
+
+
+This distribution happens automatically — you don’t have to manually write out each combination.
+
+Step 3: Distribution in Object Property Access
+The same distributive principle applies when you access properties on objects using a union of keys.
+
+For example:
+
+const config = {
+  url: "https://example.com",
+  retries: 3,
+  secure: true,
+};
+
+type Keys = "url" | "retries" | "secure";
+type ConfigValue = typeof config[Keys];
+
+
+✅ TypeScript evaluates config["url"], config["retries"], and config["secure"] individually.
+It then unions all their types together, giving you:
+
+type ConfigValue = string | number | boolean;
+
+
+So, property access distributes automatically across all members of a union key.
+
+Step 4: Union Types and Control Flow Narrowing
+Union types also work closely with type narrowing, where TypeScript refines possible types as your code runs through different logic branches.
+
+Example:
+
+type Response =
+  | { result: "success"; data: string }
+  | { result: "error"; message: string };
+
+function handleResponse(res: Response) {
+  if (res.result === "success") {
+    console.log(res.data); // ✅ TypeScript knows res is the 'success' branch
+  } else {
+    console.log(res.message); // ✅ Here res is automatically narrowed to 'error'
+  }
+}
+
+
+Initially, res could be one of two shapes (success or error).
+But once you check the result field, TypeScript automatically narrows the type — you no longer need manual type assertions.
+
+Notes / Tips:
+
+Distributive behavior makes unions powerful for building type-safe combinations without redundancy.
+
+Control flow narrowing ensures TypeScript can track which exact type you’re working with after logical checks.
+
+Always give each branch of your union a discriminant property (like result, status, or kind) to help TypeScript narrow types cleanly.
+
+Summary:
+Union types in TypeScript distribute operations across their members and then merge the outcomes into a unified type.
+This behavior shines in template literals and object lookups, providing flexibility and safety.
+Additionally, TypeScript’s type narrowing mechanism intelligently refines union types during runtime checks — allowing you to write concise, strongly typed, and error-free code.

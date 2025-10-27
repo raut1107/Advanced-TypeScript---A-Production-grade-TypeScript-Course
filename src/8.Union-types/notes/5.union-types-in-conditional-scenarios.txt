@@ -1,0 +1,117 @@
+Section Title:
+Conditional Types and Their Distributive Behavior over Unions
+
+Short Description or Goal:
+Understand how conditional types in TypeScript work, how they distribute automatically over union types, and how this powerful behavior simplifies complex type transformations.
+
+Step 1: Recap of Conditional Types
+Conditional types let you choose one type or another based on a condition.
+You can think of them as type-level if...else statements.
+
+For example:
+
+type IsNumber<T> = T extends number ? "yes" : "no";
+
+
+If T is assignable to number, it returns "yes".
+
+Otherwise, it returns "no".
+
+Example usage:
+
+type ResultA = IsNumber<100>;    // "yes"
+type ResultB = IsNumber<"hello">; // "no"
+
+
+Step 2: Conditional Types and Unions
+Now, what happens when you pass a union type?
+
+type ResultC = IsNumber<100 | "hello" | true>;
+
+
+If you hover over ResultC, TypeScript shows:
+
+type ResultC = "yes" | "no";
+
+
+At first, you might expect "no" because the whole union isn’t a number, but TypeScript distributes the condition over each member of the union.
+
+Behind the scenes, TypeScript interprets this as:
+
+type ResultC_V2 =
+  | (100 extends number ? "yes" : "no")
+  | ("hello" extends number ? "yes" : "no")
+  | (true extends number ? "yes" : "no");
+
+
+✅ So you get "yes" | "no".
+
+This distributive conditional behavior happens automatically when you use a generic type parameter in the condition.
+
+Step 3: Why This Is Useful — A Practical Example
+Let’s take an example using template literal types and recursion.
+Suppose you want to convert dashes in strings into spaces.
+
+type DashToSpace<Str extends string> =
+  Str extends `${infer Part}-${infer Rest}`
+    ? `${Part} ${DashToSpace<Rest>}`
+    : Str;
+
+
+How it works:
+
+If the string matches the pattern <Part>-<Rest>, it replaces the dash with a space and recursively processes Rest.
+
+Otherwise, it just returns the string as is.
+
+Example usage:
+
+type Example1 = DashToSpace<"some-text">;
+// "some text"
+
+
+Now, if you pass in a union of strings:
+
+type Example2 = DashToSpace<"some-text" | "another-text">;
+
+
+You’ll get:
+
+type Example2 = "some text" | "another text";
+
+
+✅ The same transformation is automatically applied to each member of the union, even though your type definition didn’t explicitly handle unions.
+That’s the power of distributivity — TypeScript takes care of applying the transformation individually to each part.
+
+Step 4: Important Note — When Distributivity Happens
+Distributivity only occurs when the union is received as a generic type parameter.
+
+Example 1 (No Distribution):
+
+type Test = (number | string) extends string ? true : false;
+// Result: false
+
+
+Here, TypeScript treats the whole union as a single entity — no distribution occurs.
+
+Example 2 (Distribution Enabled):
+
+type Test1<T> = T extends string ? true : false;
+type Result = Test1<number | string>;
+// Result: true | false
+
+
+✅ Because T is a generic parameter, the conditional distributes over each union member — first checks number, then string, and merges results.
+
+Notes / Tips:
+
+Distributive behavior happens only when the checked type is a generic parameter, not a direct union.
+
+It’s incredibly useful for type transformations like string manipulations, filtering types, or recursive type logic.
+
+Template literal types + conditional types + union types form one of the most powerful combinations in advanced TypeScript typing.
+
+Summary:
+Conditional types allow you to express logic at the type level.
+When used with union types, TypeScript distributes the conditional check across all members of the union automatically — simplifying complex transformations without any additional syntax.
+This makes advanced type manipulation — such as recursive string transformations — both elegant and powerful.

@@ -1,0 +1,97 @@
+Section Title:
+Understanding and Using Union Types in TypeScript
+
+Short Description or Goal:
+Learn how union types in TypeScript help describe precise valid states in your application, making your code more predictable, safe, and maintainable.
+
+Step 1: The Challenge — Flexible JavaScript and Vague Types
+JavaScript’s dynamic nature makes it hard to define clear data states. Without union types, your type definitions may become too vague, allowing combinations of properties that don’t logically fit together.
+
+Example (Problem):
+
+type UserStatus = {
+  state: string;
+  userData?: {
+    id: number;
+    name: string;
+  };
+  errorMsg?: string;
+};
+
+
+Issues with this approach:
+
+It doesn’t specify which values state can take.
+
+It allows impossible states, like having both userData and errorMsg together.
+
+It’s unclear when certain properties should appear.
+
+Step 2: The Solution — Union Types
+Union types allow you to explicitly describe every valid combination of states your program can be in.
+
+You can redefine the UserStatus type like this:
+
+export type UserStatus =
+  | {
+      state: "loading";
+    }
+  | {
+      state: "loaded";
+      userData: {
+        id: number;
+        name: string;
+      };
+    }
+  | {
+      state: "failed";
+      errorMsg: string;
+    };
+
+
+Step 3: What This Type Definition Means
+
+Loading state: Data is being fetched — no user data or error yet.
+
+Loaded state: Fetch succeeded — must have valid userData.
+
+Failed state: Fetch failed — must have an errorMsg.
+
+Each case is mutually exclusive, so TypeScript can prevent invalid combinations.
+
+Step 4: Example in Action
+
+Correct Usage:
+
+let status: UserStatus = {
+  state: "loaded",
+  userData: {
+    id: 1,
+    name: "Sam",
+  },
+};
+
+
+Invalid Usage (Caught by TypeScript):
+
+let badStatus: UserStatus = {
+  state: "loaded",
+}; 
+// ❌ Error: Property 'userData' is missing in type
+
+
+TypeScript will give helpful autocomplete and error messages, ensuring that only valid states can exist.
+
+Step 5: Why This Matters
+Union types let you:
+
+Explicitly define all possible states of your program.
+
+Prevent impossible or conflicting property combinations.
+
+Get stronger autocomplete and compile-time validation.
+
+By forcing you to consider every valid case, union types lead to more robust and predictable code.
+
+Summary:
+Union types make your application safer by describing exactly which states are allowed. Instead of having one vague type with optional properties, you define a finite set of valid states. This approach improves clarity, correctness, and developer experience by ensuring TypeScript can catch invalid state transitions before runtime.
